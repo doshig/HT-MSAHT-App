@@ -1784,7 +1784,7 @@ return todayDate;
     $scope.increaseSpecFormRev = function(spec){
     
         if(spec.mostCurrent){
-        
+
             if(spec.specMasterReviewed !=null && spec.specMasterApproved != null){
                 spec.specFormRevision = 99; //Set to 99 to use as trigger in Django save method
                 console.log(spec.specFormRevision);
@@ -1927,39 +1927,45 @@ return todayDate;
             alert("Please enter date in format: YYYY-MM-DD, E.G.: 2019-10-03.");
         }
         else{
-
-
-            if(!data.locked){
-                if(data.reviewBy != null && data.reviewDate != null && data.reviewDate != '1900-01-01' && (data.reviewDate <= today) && (data.postItNote == null | data.postItNote == "")){
-                    
+            var approvedUsers = ['morenod','ganzhav','rodrigueza']
+            if(approvedUsers.includes(spec.specMasterReviewed) && approvedUsers.includes(spec.specMasterApproved)){
+                if(!data.locked){
     
-                    $scope.putTreatsThenCatch(data)
-                    .then(function(response){
-                        $("#topLevelDiv").find("input,button,textarea,select").attr("disabled",true);
-                        alert("TTPI is now locked.");
-                    
-                    })
-                    .catch(function(e){
-                        console.log("error: ", e);
-                        alert("Review failed. Data is not locked.");
-                    })	
-                    data.locked = true;
+                    if(data.reviewBy != null && data.reviewDate != null && data.reviewDate != '1900-01-01' && (data.reviewDate <= today) && (data.postItNote == null | data.postItNote == "")){
+                        
+        
+                        $scope.putTreatsThenCatch(data)
+                        .then(function(response){
+                            $("#topLevelDiv").find("input,button,textarea,select").attr("disabled",true);
+                            alert("TTPI is now locked.");
+                        
+                        })
+                        .catch(function(e){
+                            console.log("error: ", e);
+                            alert("Review failed. Data is not locked.");
+                        })	
+                        data.locked = true;
+                    }
+                    else if(data.postItNote != null && data.postItNote != ""){
+                        alert("Please clear the sticky note.");
+                    }
+                    else if (data.reviewDate > today){
+                        alert("Date reviewed cannot be in the future.");
+                    }
+        
+                    else{
+                        alert("Please ensure reviewed by and reviewed date are not blank.");
+                    }
                 }
-                else if(data.postItNote != null && data.postItNote != ""){
-                    alert("Please clear the sticky note.");
-                }
-                else if (data.reviewDate > today){
-                    alert("Date reviewed cannot be in the future.");
-                }
-    
                 else{
-                    alert("Please ensure reviewed by and reviewed date are not blank.");
+                    alert("TTPI is already locked.");
                 }
-            }
+                }
             else{
-                alert("TTPI is already locked.");
+                alert("Spec must be reviewed and approved by approved users.");
             }
         }
+
     }
     
     $scope.commitSpecApproved = function(spec){
@@ -1981,24 +1987,36 @@ return todayDate;
             //console.log("username: " + x);
             if(username == "morenod"){
                 spec.specMasterApproved = "D.Moreno";
+                if(spec.specMasterReviewed != null && spec.specMasterApproved != null){
+                //As long as specmasterpparoved is not null it will lock file //This triggers the correct save method to fire
+                $scope.putTreatSpecs(spec);
+
+                }
             }
             else if (username == "ganzhav"){
                 spec.specMasterApproved = "V.Ganzha";
+                if(spec.specMasterReviewed != null && spec.specMasterApproved != null){
+                //As long as specmasterpparoved is not null it will lock file //This triggers the correct save method to fire
+                $scope.putTreatSpecs(spec);
+
+                }
+
             }
             else if (username == "rodrigueza"){
                 spec.specMasterApproved = "A.Rodriguez";
+                if(spec.specMasterReviewed != null && spec.specMasterApproved != null){
+                //As long as specmasterpparoved is not null it will lock file //This triggers the correct save method to fire
+                $scope.putTreatSpecs(spec);
+
+                }
+
             }
             else{
-                spec.specMasterApproved = username;
+                alert("Please make sure you are signed in. Only the following people can approve specs: morenod, ganzhav, rodrigueza.");
 
             }
         
-            if(spec.specMasterReviewed != null && spec.specMasterApproved != null){
-                //As long as specmasterpparoved is not null it will lock file //This triggers the correct save method to fire
-                $scope.putTreatSpecs(spec);
-                //spec.specLocked = true; //cannot assign locked = true here.. otherwise put will fail // model will do this
-            
-            }
+
             
         
         }
