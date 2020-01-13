@@ -1784,7 +1784,7 @@ return todayDate;
     $scope.increaseSpecFormRev = function(spec){
     
         if(spec.mostCurrent){
-        
+
             if(spec.specMasterReviewed !=null && spec.specMasterApproved != null){
                 spec.specFormRevision = 99; //Set to 99 to use as trigger in Django save method
                 console.log(spec.specFormRevision);
