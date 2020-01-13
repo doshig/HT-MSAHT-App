@@ -1,0 +1,118 @@
+{% extends "Homepage/header.html" %}
+
+{% block content %}
+{% load staticfiles %}
+
+
+<html>
+
+<style>
+
+form {
+	padding-top: 30px;
+	padding-left: 14px;
+	width : 100%;
+	color: black;
+	font-weight:bold;
+}
+
+.btnokcount{
+	font-weight:bold;
+}
+
+.errortonotify{
+	
+	color: red;
+
+}
+
+
+
+</style> 
+
+
+<body ng-app="HT.HeatTreat" >
+
+	{% verbatim %}
+	<div ng-controller="HeatTreatController">	
+
+<!-- START Modal remaining operation -->	
+
+	<div class="modal" id="nextOpModal" ng-cloak>
+	  <div class="modal-dialog" role="dialog">
+		<div class="modal-content">
+		  <div class="modal-header">
+			<h5 class="modal-title">Job : {{actualjob}} </h5>
+		  </div>
+		  <div class="modal-body">
+    		    <h4> Move to: {{ movetoop }}</h4> 
+				<p>
+				<h4 class="errortonotify" ng-if="errorclockout == true " > <i class="fas fa-times-circle"></i> Error : Previous operation not clocked out. </h4>
+				
+				<h4 class="errortonotify" ng-if="countnbpart <= supquantitymin " > <i class="fas fa-times-circle"></i> Error : Shortage in Quantity ! Report to center office. </h4>
+				<h4 class="errortonotify" ng-if="countnbpart >= supquantitymax " > <i class="fas fa-times-circle"></i> Error : Overage in Quantity ! Report to center office.</h4>
+				<!--
+				<h4 class="errortonotify" ng-if="countnbpart > prevcount " > <i class="fas fa-times-circle"></i> Error : Quantity is over the last counted quantity.</h4>
+				<h4 class="errortonotify" ng-if="countnbpart < allowedqty " > <i class="fas fa-times-circle"></i> Error : Quantity is under the scrap allowance.</h4>
+				-->	
+		  </div>
+		  <div class="modal-footer">
+			<!--<button type="button" data-dismiss="modal" ng-click="resetFunction()">Done</button>-->
+			<button type="button" ng-click="resetFunction()">Done</button>
+
+		  </div>
+		</div>
+	  </div>
+	</div>
+<!-- END Modal remaining operation -->		
+
+
+
+		<form>
+		
+			<legend>Counting Book Log :</legend>
+			
+				<div class="form-group">
+				  <label for="employeid">Employee ID :</label>
+				  <p>
+				  <input size="20" type="text" ng-change="passFocus()" ng-model="countemploye" ng-model-options='{ debounce: 1000 }' id="employeid" placeholder="Employee ID ..." />
+				</div>
+				<div class="form-group">
+				  <label for="lotno">Work Order Number : </label>
+				  <p>
+				  <input size="10" type="text" ng-change="passFocus1()"  ng-model="countlot" ng-model-options='{ debounce: 1000 }' id="lotno" placeholder="Lot # ..." />
+				</div>
+				<div class="form-group">
+				  <label for="nbpart">Number of Parts : </label>
+				  <p>
+				  <input size="20" type="text"  ng-model="countnbpart"  id="nbpart" placeholder="# of parts ..." />			
+				</div>
+				
+				<!--<button class="btnokcount" id="btnvalidate" ng-click="validateFunction(countemploye,countlot,countnbpart)"  data-toggle="modal" data-target="#nextOpModal" > Validate </button>-->
+				<button class="btnokcount" id="btnvalidate" ng-click="validateFunction(countemploye,countlot,countnbpart)"  > Validate </button>
+            
+               <!-- These only show up after the http.post commits--> 
+              <div>Previous LOT# || MOVETO#</div>
+              <div ng-if="prevjob != null">{{prevjob}} || {{prevmoveto}}</div>
+                <!-- These are turned off after the resetFunction() executes -->
+				<div ng-repeat="data in countdata track by $index" id="previousInfo" style="background-color:lightblue"> 
+    					<div ng-if="$index == countdata.length-1" id="redfish"> {{data.LotNo}}|| {{data.MoveTo}}</div>
+
+                </div>
+				
+    				
+		</form>
+		
+			
+	</div>
+	{% endverbatim %}
+
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.7/angular.min.js"></script>
+	<script src="{% static 'HeatTreat.js' %}"></script>	
+	<script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+
+
+</body>
+</html>
+
+{% endblock %}

@@ -1,0 +1,175 @@
+{% extends "Homepage/header.html" %}
+
+
+{% block content %}
+{%load staticfiles%}
+
+<!DOCTYPE html>
+<style>
+form {
+	padding-top: 10px;
+	padding-left: 14px;
+	width : 100%;
+	color: black;
+	font-weight:bold;
+}
+
+.btnokcount{
+	font-weight:bold;
+}
+
+.okdep {
+	color:green;
+}
+
+.nookdep {
+	color:red;
+}
+
+div.container1 {
+  font-weight: bold;
+  background-color: white ;
+  width: 100%;
+  overflow: scroll;
+  padding : 5px;
+}
+
+.table {
+	font-size: 14px;
+	color:black;
+}
+
+thead, tbody {
+	padding : 2px;
+}
+
+tr.listtoschedule:hover {
+
+	background-color: #CACFD2 ;
+	
+}
+
+td.tdschedulelist {
+	
+	padding-top:1px;
+	padding-bottom:1px;
+	overflow:hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+
+}
+
+td.tdright {
+	
+	padding-top:1px;
+	padding-bottom:1px;
+	overflow:hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	color: green;
+
+}
+td.tdwrong {
+	
+	padding-top:2px;
+	padding-bottom:2px;
+	overflow:hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	color: red;
+
+}
+
+table{
+border: 1px solid black;
+    font-color:black
+
+}
+
+</style>
+<head>
+    <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.7/angular.min.js"></script>
+    <!--<script src="{% static 'HeatTreat/HeatTreat.js' %}"> </script>-->
+    <!-- 04/03/19 - Update the .JS so it always downloads a new one. This is done by appending random number to the end which tricks browser to get a new copy -->
+    <!-- 08/14/19 moved authentication/login to views.py using django mixins -->
+    <script>document.write('<script src="{% static 'HeatTreat/HeatTreat.js' %}?ver=' + Math.floor(Math.random() * 100) + '"\><\/script>');</script>
+    <meta http-equiv="refresh" content="300"/>
+</head>
+
+
+    <body ng-app="HT.HeatTreat" >
+
+        {% verbatim%}
+        <div ng-controller="HeatTreatController">
+        <p>
+        <div class="table">
+        This page will display orders that meet the following criteria:<p>
+        &nbsp;&nbsp;&nbsp;&nbsp;1. The TTPI must be reviewed by the operator (click "CLICK WHEN COMPLETE" button on Operator TTPI page). 
+        <p>
+        &nbsp;&nbsp;&nbsp;&nbsp;2. The TTPI must be reviewed by manager ("Edit TTPI" page -> review at bottom with name and time).
+        </div>
+        <div ng-if="!needcertdata.length" style="color:black; size:12px"> Loading all workorders...</div>
+        <div ng-if="needcertdata.length" style="color:black; size:12px"> Unreviewed TTPI now displayed. </div>
+        <div ng-if="needcertdata.length" style="color:black; size:12px"> Operator must click button for it to appear here. </div>
+
+        <!-- 3/28/19 - add information for operator reviewed, filterOperator -->
+        <!-- 3/28/19 - add auto refresh every 5 minutes -->
+        <!-- 3/29/19 - add ?1 to end of js source so that it auto downloads JS file everytime so you don't need CTRL+F5 -->
+        <table class="table">
+            <thead>
+                <tr class="table-dark">
+                    <th scope="col" style="padding-top:1px;padding-bottom:1px;">Work Order</th>
+                    <th scope="col" style="padding-top:1px;padding-bottom:1px;">Generated Date</th>
+        				  <th scope="col" style="padding-top:1px;padding-bottom:1px;">Manager Reviewed </th>
+        				  <th scope="col" style="padding-top:1px;padding-bottom:1px;">Operator Reviewed </th>
+        				  <th scope="col" style="padding-top:1px;padding-bottom:1px;">Operator Reviewed Time </th>
+
+        				  <th scope="col" style="padding-top:1px;padding-bottom:1px;">Part Number</th>
+        				  <th scope="col" style="padding-top:1px;padding-bottom:1px;">Load Number</th>        
+        				  <th scope="col" style="padding-top:1px;padding-bottom:1px;">Total # Loads </th>
+        				  <th scope="col" style="padding-top:1px;padding-bottom:1px;">Pieces </th>
+        				  <th scope="col" style="padding-top:1px;padding-bottom:1px;">Edit TTPI </th>
+     
+    				 </tr>
+    				<tr>
+        				<td><input type="text" ng-model="filterWO" style="width:100px"/></td>
+        				<td><input type="text" ng-model="filterGenDate" style="width:100px"/></td>
+        				<td></td>
+        				<td><button ng-click="toggleOperatorDone(data)">Toggle Yes/No</button></td>
+        				<td></td>
+        				<td><input type="text" ng-model="filterPN" style="width:100px"/></td>
+        				<td><input type="text" ng-model="filterLoad" style="width:60px"/></td>
+        				<td><input type="text" ng-model="filterTotalLoads" style="width:60px"/></td>
+        				<td><input type="text" ng-model="filterPieces" style="width:60px"/></td>
+        		
+        			</tr>
+        		</thead>
+        		<tbody>
+
+            		<tr style="height:10px" ng-repeat="data in needcertdata| filter:{workOrder:filterWO,genDate:filterGenDate, partNumber:filterPN, loadNumber:filterLoad, numLoads:filterTotalLoads,quantityLot:filterPieces}|orderBy:'genDate' " >
+                    <td>{{data.workOrder}}</td>
+                    <td>{{data.genDate}}</td>
+                    <td>{{data.reviewBy}}</td>
+                    <td ng-if="data.operatorDone" style="color:green">YES</td>
+                    <td ng-if="!data.operatorDone" style="color:red">NO</td>
+                    <td>{{data.operatorDoneDateTime| date:'short'}}</td>
+                    <td ng-if="!data.partNumber"  ><pre style="background-color:red"/>  </td>
+                    <td ng-if="data.partNumber">{{data.partNumber}}</td>
+                    
+                    <!--<td ng-if="data.workOrder != print.workOrder"> NO </td>-->
+                    <td>{{data.loadNumber}}</td>
+                    <td>{{data.numLoads}}</td>
+                    <td>{{data.quantityLot}} </td>
+                    <td><button ng-click="createCert(data)"> Create Cert</button> </td>            
+                </tr>
+                
+            </tbody>
+
+        {%endverbatim%}
+
+    </body>
+
+
+
+{% endblock %}

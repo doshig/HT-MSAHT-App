@@ -1,0 +1,141 @@
+{% extends "Homepage/header.html" %}
+
+
+{% block content %}
+{%load staticfiles%}
+
+<!DOCTYPE html>
+<style>
+div.text{
+color:black;
+display:inline-block;
+}
+
+
+form {
+	padding-top: 20px;
+	padding-left: 14px;
+	width : 100%;
+	color: black;
+	font-weight:bold;
+}
+
+.btnokcount{
+	font-weight:bold;
+}
+
+.okdep {
+	color:green;
+}
+
+.nookdep {
+	color:red;
+}
+
+div.container1 {
+  font-weight: bold;
+  background-color: white ;
+  width: 100%;
+  overflow: scroll;
+  padding : 10px;
+}
+
+.table {
+	font-size: 14px;
+	color:black;
+}
+
+thead, tbody {
+	padding : 2px;
+}
+
+tr.listtoschedule:hover {
+
+	background-color: #CACFD2 ;
+	
+}
+
+td.tdschedulelist {
+	
+	padding-top:1px;
+	padding-bottom:1px;
+	overflow:hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+
+}
+
+td.tdright {
+	
+	padding-top:1px;
+	padding-bottom:1px;
+	overflow:hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	color: green;
+
+}
+td.tdwrong {
+	
+	padding-top:2px;
+	padding-bottom:2px;
+	overflow:hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	color: red;
+
+}
+
+table{
+border: 1px solid black;
+    font-color:black
+
+}
+
+</style>
+<head>
+    <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.7/angular.min.js"></script>
+    <script src="{% static 'HeatTreat/HeatTreat.js' %}"> </script>
+    
+</head>
+<!-- Update style to table. Add ative user, add initial -->
+<body ng-app="HT.HeatTreat" >
+    {% verbatim%}
+    <!-- 08/14/19 moved authentication/login to views.py using django mixins -->
+    <div ng-controller="HeatTreatController">
+        <p>
+        <div style="color:black">Edit existing operators, just type:</div>
+        
+        <table class="table">
+            <thead>
+                <tr class="table-dark">
+                    <th scope="col" style="padding-top:1px;padding-bottom:1px;" >Operator Name</th>
+                    <th scope="col" style="padding-top:1px;padding-bottom:1px;" >Operator ID</th>
+                    <th scope="col" style="padding-top:1px;padding-bottom:1px;" >Operator Initial</th>
+                    <th scope="col" style="padding-top:1px;padding-bottom:1px;" >Operator Active</th>
+                    <th scope="col" style="padding-top:1px;padding-bottom:1px;" >Manager/Supervisor</th>
+                </tr>
+            </thead>
+            <tr ng-repeat="data in Operatordata">
+                <td> <input type="text" ng-model="data.operatorName" ng-change="updateOperatorList(data)" ng-model-options='{ debounce: 1000 }' /> </td>
+                <td> <div class="text">{{data.operatorID}}</div> </td>
+                <td>  <input type="text" ng-model="data.operatorInitials" ng-change="updateOperatorList(data)" ng-model-options='{ debounce: 1000 }'/> </td>
+                <td> Active: <input type="checkbox" ng-model="data.userActive"  ng-change="updateOperatorList(data)"/> </td>
+                <td>  Can Review TTPI: <input type="checkbox" ng-model="data.canReviewTTPI"  ng-change="updateOperatorList(data)"/> </td>
+            </tr>
+        </table>
+
+        <p>
+        <div style="color:black">Add new operator to list: </div>
+        <input type="text" ng-model="newOperatorID" placeholder="New Operator ID"></input>
+        <p>
+        <button ng-click="addOperatorById(newOperatorID)">Add Operator by ID </button>
+    </div>
+
+    {%endverbatim%}
+</body>
+
+
+
+{% endblock %}

@@ -1,0 +1,613 @@
+﻿{% extends "Homepage/header.html" %}
+
+{% block content %}
+{% load staticfiles %}
+
+<!DOCTYPE html>
+<!-- saved from url=(0088)https://s.codepen.io/boomerang/iFrameKey-a33f01ed-2888-534d-cb62-0e397663fc6d/index.html -->
+<html lang="en" class=" -webkit-" xmlns:size="http://www.w3.org/1999/xhtml">
+<head>
+    <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.7/angular.min.js"></script>
+    <!--<script src="{% static 'HeatTreat/HeatTreat.js' %}"> </script>-->
+    <!--<script src="{% static 'HeatTreat/HeatTreat.js' %}?1"> </script>-->
+    <!-- This will fool the cache into auto updating the .js file -->
+    <!-- 04/03/19 - Update the .JS so it always downloads a new one. This is done by appending random number to the end which tricks browser to get a new copy -->
+    <script>document.write('<script src="{% static 'HeatTreat/HeatTreat.js' %}?ver=' + Math.floor(Math.random() * 100) + '"\><\/script>');</script>
+    
+       
+             
+
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<!--<script src="/console_runner-ce3034e6bde3912cc25f83cccb7caa2b0f976196f2f2d52303a462c826d54a73.js.download"></script>-->
+	<!--<script src="/css_live_reload_init-e9c0cc5bb634d3d14b840de051920ac153d7d3d36fb050abad285779d7e5e8bd.js.download"></script>-->
+	<meta name="robots" content="noindex">
+	<link rel="shortcut icon" type="image/x-icon" href="https://static.codepen.io/assets/favicon/favicon-8ea04875e70c4b0bb41da869e81236e54394d63638a1ef12fa558a4a835f1164.ico">
+	<link rel="mask-icon" type="" href="https://static.codepen.io/assets/favicon/logo-pin-f2d2b6d2c61838f7e76325261b7195c27224080bc099486ddd6dccb469b8e8e6.svg" color="#111">
+	<link rel="canonical" href="https://codepen.io/rafaelcastrocouto/pen/LFAes">
+
+<style class="cp-pen-styles">
+table.GeneratedTable {
+  width: 100%;
+  background-color: #ffffff;
+  border-collapse: collapse;
+  border-width: 2px;
+  border-color: #000000;
+  border-style: solid;
+  color: #000000;
+  font-size:11pt;
+}
+
+table.GeneratedTable td, table.GeneratedTable th {
+  border-width: 2px;
+  border-color: #000000;
+  border-style: solid;
+  padding: 3px;
+
+}
+
+table.GeneratedTable thead {
+  background-color: #ffffff;
+}
+
+.operatorInfo{
+    font-size:10pt;
+}
+.parameterInfo{
+    font-size:10pt;
+    padding: 0px;
+    margin: 0px;
+    height: 0.5px;
+}
+
+
+body {
+  background: rgb(204,204,204);
+}
+page {
+  background: white;
+  display: block;
+  margin: 0 auto;
+  margin-bottom: 1in;
+  margin-top: 0.5cm;
+  box-shadow: 0 0 0.5cm rgba(0,0,0,0.5);
+}
+page[size="A4"] {
+  width: 21cm;
+  height: 29.7cm;
+}
+page[size="A4"][layout="portrait"] {
+  width: 29.7cm;
+  height: 21cm;
+}
+form{
+    color: black;
+    font-weight:bold;
+}
+highlightme {
+background-color:#FFFF00;
+}
+
+@media all{
+    .page-break{display: none;}
+
+}
+
+@media print{ @page {size: portrait}
+    .no-print, .no-print *{
+    
+        display: none !important;
+    }d
+    footer {page-break-after:always;}
+    .page-break{display:block; page-break-before:always;}
+
+}
+
+}</style></head>
+
+    <body ng-app="HT.HeatTreat" >
+        {% verbatim%} 
+        <div ng-controller="HeatTreatController">
+        <!-- 03/27/19 - add uniformity tolerance under actual values, channel TC will now show automatically from .js file, oil quench now correctly shows options on Alkaline clean after quench
+        Set operator debounce to 2500 or 3000ms on most items -->
+        <!-- added information near UNLOCKED relating to operatorDone model -->
+                <!-- 3/29/19 - add ?1 to end of js source so that it auto downloads JS file everytime so you don't need CTRL+F5 -->
+                <!-- 04/24/19 - do not show oil/water temperature BEFORE quench if data.specNumber == AMS2801 -->
+                <!-- 04/24/19 - "Click when complete" now turns to submitted when finished. -->
+                <!--Added considerable error checking. For example +/- time tolerance out of spec. -->
+                <!--+/- time tolerance now changes red if incorrect. -->
+         <!-- 08/14/19 moved authentication/login to views.py using django mixins -->
+         <!-- 09/19/19 Add read only sticky note -->
+<div class="OnLoadOperatorTTPI"> <!-- This class is linked to JS - do not change -->
+</div>
+
+
+        <div class= 'no-print' >
+            <label for="WOinput"> Work Order: </label>
+            <input type="text" ng-model="filterWO" id="filterWOID" placeholder="Work Order" name="WOinput" ng-model-options='{ debounce: 300 }' ></input>
+            <br>
+            <label for="filterLoad">Load Number: </label> 
+            <input type="text" ng-model="filterLoad" id="filterLoadID" placeholder="load # (Not Required)" name= "filterLoad" ng-model-options='{debounce: 300}' ></input>
+            <!--<button ng-click="increaseLoadFilter()">+</button> <button ng-click="decreaseLoadFilter()">-</button>-->
+            <div ng-if="!pendingjobdata.length" style="color:black; size 14px">Data Loading. Please wait. </div>
+            <div ng-if="pendingjobdata.length" style="color:black; size:14px">Data Loaded. {{pendingjobdata.length}} work orders scanned.</div> 
+            <div ng-if="allfiltereddata.length" style="color:black; size:14px"> Matches found: {{allfiltereddata.length}}</div>
+        </div>
+        <div ng-repeat="data in pendingjobdata  | filter:{workOrder:filterWO}  : true | filter:{loadNumber : filterLoad} |orderBy: 'loadNumber'  as allfiltereddata track by data.id  ">
+        <div ng-if="filterWO" style="color:black" ng-repeat="spec in specdata | filter:{specNumber:data.specNumber, specRevision:data.specRevision,specMaterial:data.specMaterial,specMaterialSpec:data.specMaterialSpec, specMaterialSpecRevision:data.specMaterialSpecRevision} | orderBy:'-specFormRevision' | limitTo:'1'   track by spec.id "> 
+        
+            <div class="no-print">
+                <!--<input type="button" value="Print Cert" ng-click="createCert(data)"> Print Cert </input>-->
+                <!--<input type="button" value="Print Cert" ng-click="createCert(data); openPrintCert(data)"> Print Cert </input>-->
+                <p>
+                <span ng-if="data.numLoads != 1"  style="background-color: #FFFF00; font-size:24px; text-align:center;">This Work Order has {{data.numLoads}} loads. </span> 
+
+               <p>
+
+                  <table class="GeneratedTable" style="width:300px; height:100px">
+                    <tr>
+                        <td > Sticky Notes </td>
+                    </tr>
+                    <tr>
+                        <td ><textarea readonly style="background-color:#FFFF99"  ng-model="data.postItNote" rows="5" cols="30" >  </textarea></td>
+                    </tr>
+
+
+                </table>
+
+                <p>
+
+
+            </div>
+
+
+
+
+
+
+            <page  size="A4">
+                <!-- TTPI Header area-->
+                <!-- I.E. MS Aerospace logo etc -->
+                <table    class="GeneratedTable">
+                    <tbody onload="loadPage(data)">
+
+                    <tr>
+                        <td rowspan="3">                     
+                        {%endverbatim%}
+                            <img src="{%static 'images/MSAlogo.jpg' %}" style="width:180px;height:40px"></img>
+                        {%verbatim%} 
+                        </td>
+                        <td rowspan="2">Thermal Treatment<br> Process Instructions</td>
+                        <td rowspan="1" colspan="3">{{spec.specMaterial}} Solution Treat I.A.W.</td>
+                        <td rowspan="2">REV: {{spec.specFormRevision}}</td>
+                    </tr>
+
+                    <tr>
+                        <td colspan="3"> {{spec.specNumber}} REV {{spec.specRevision}}</td>
+                    </tr>
+
+                    <tr>
+                      <td>Reviewed By:</td>
+                      <td ng-if="spec.specMasterReviewed != null">{{spec.specMasterReviewed}}</td>
+                      <td ng-if="spec.specMasterReviewed == null">BLANK </td>
+                 
+                      
+                      <td>Approved By:</td>
+                      <td>{{spec.specMasterApproved}}</td>
+                      <td>{{spec.specFormRevDate}}</td>
+                    </tr>
+                  </tbody>
+                </table>
+                
+                <!-- TTPI central body area - material, p/n, customer, PO, coupons, operator info -->
+                <table class="GeneratedTable">
+                    <tbody>
+                        <tr>
+                            <td colspan="11">Process Solution Treat I.A.W. {{spec.specNumber}} Rev {{spec.specRevision}} & MSAP 7.10 Solution Treat {{spec.specTempSetPointLow}} - {{spec.specTempSetPointHigh}}F holding +/- <strong>{{spec.specUniformityTol}}</strong>F for <strong><il ng-if="data.overrideSoakTime">{{data.overrideSoakTime}}</il> <il ng-if="!data.overrideSoakTime">{{spec.specSoakTime}}</il></strong> minutes -<strong>{{spec.specSoakMinusTimeTol}}</strong>/+<strong><il ng-if="data.overrideSoakTimePlusTol">{{data.overrideSoakTimePlusTol}}</il><il ng-if="!data.overrideSoakTimePlusTol">{{spec.specSoakPosTimeTol}}</il></strong> minutes</td>
+                        </tr>
+                        <tr>
+                            <td colspan="6">Material -<strong> {{spec.specMaterial}} I.A.W.</strong> <strong>{{spec.specMaterialSpec}}</strong> REV <strong>{{spec.specMaterialSpecRevision}}</strong></td>
+                            <td colspan="3">
+                                <div ng-if="data.locked"><strong>LOCKED</strong></div>
+                                <div ng-if="!data.locked">UNLOCKED</div>
+                            </td>
+                            <td colspan="2">
+                                <div ng-if="data.operatorDone"> Information Submitted {{data.operatorDoneDateTime| date:'short'}} </div>
+                                <div ng-if="!data.operatorDone"> Not submitted </div>
+                        </tr>
+                        <tr>
+                            <td colspan="6" ng-if="data.rev != 'REV ERROR' && data.partNumber != 'PN ERROR' ">Part Number <strong>{{data.partNumber}}</strong> REV - <strong>{{data.rev}}</strong></td>
+                            <td colspan="6" ng-if="data.rev == 'REV ERROR' && data.partNumber != 'PN ERROR' ">Part Number <strong>{{data.partNumber}}</strong> REV - <strong><span style="background-color: #FFFF00"> {{data.rev}}</span></strong></td>
+                            <td colspan="6" ng-if="data.rev != 'REV ERROR' && data.partNumber == 'PN ERROR' ">Part Number <strong><span style="background-color: #FFFF00">{{data.partNumber}}</span></strong> REV - <strong>{{data.rev}}</strong></td>
+                            <td colspan="6" ng-if="data.rev == 'REV ERROR' && data.partNumber == 'PN ERROR' ">Part Number <strong><span style="background-color: #FFFF00">{{data.partNumber}}</span></strong> REV - <strong><span style="background-color: #FFFF00"> {{data.rev}}</span></strong></td>
+                            
+                            <td colspan="5">Work Order Number <strong>{{data.workOrder}}</strong></td>
+                        </tr>
+
+                        <tr>
+                            <td colspan="6" ng-if="data.customer != 'CUSTOMER ERROR' && data.PO != 'PO ERROR' ">Customer <strong>{{data.customer}}</strong> <br>PO <strong> {{data.PO}}</strong></td>
+                            <td colspan="6" ng-if="data.customer == 'CUSTOMER ERROR' && data.PO != 'PO ERROR' ">Customer <strong><span style="background-color: #FFFF00">{{data.customer}}</span></strong> <br>PO <strong> {{data.PO}}</strong></td>
+                            <td colspan="6" ng-if="data.customer != 'CUSTOMER ERROR' && data.PO == 'PO ERROR' ">Customer <strong>{{data.customer}}</strong> <br>PO <strong> <span style="background-color: #FFFF00">{{data.PO}}</span></strong></td>
+                            <td colspan="6" ng-if="data.customer == 'CUSTOMER ERROR' && data.PO == 'PO ERROR' ">Customer <strong><span style="background-color: #FFFF00">{{data.customer}}</span></strong> <br>PO <strong><span style="background-color: #FFFF00"> {{data.PO}}</span></strong></td>
+
+                            <td colspan="5" align="right">Furnace Capability
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                <label for="VF1check"><strong>VF1</strong></label>
+                                 <input type="checkbox" name="VF1checkbox" id="VF1check" ng-model="spec.specVF1" disabled >
+                                &nbsp;&nbsp;&nbsp;&nbsp;
+                                <label for="VF2check"><strong>VF2</strong></label>
+                                <input type="checkbox" name="VF2checkbox" id="VF2check" ng-model="spec.specVF2" disabled  >
+
+                                <br>
+                                <label for="TMQ1check"><strong>TMQ1</strong></label>
+                                <input type="checkbox" name="TMQ1checkbox" id="TMQ1check" ng-model="spec.specTMQ1" disabled>
+                                &nbsp;&nbsp;&nbsp;&nbsp;
+                                <label for="TMQ2check"><strong>TMQ2</strong></label>
+                                <input type="checkbox" name="TMQ2checkbox" id="TMQ2check" ng-model="spec.specTMQ2" disabled>
+                                &nbsp;&nbsp;&nbsp;&nbsp;
+                                <label for="TMQ3check"><strong>TMQ3</strong></label>
+                                <input type="checkbox" name="TMQ3checkbox" id="TMQ3check" ng-model="spec.specTMQ3" disabled>
+                                </td>
+                        </tr>
+
+                        <tr>
+                            <td colspan="4" ng-if="data.heatNumber != 'HEAT ERROR' ">Heat Number <strong>{{data.heatNumber}}</strong></td>
+                            <td colspan="4" ng-if="data.heatNumber == 'HEAT ERROR' ">Heat Number <strong><span style="background-color: #FFFF00">{{data.heatNumber}}</span></strong></td>
+                            <td colspan="4" ng-if="data.WOop != 999">W.O Operation <strong>{{data.WOop}}</strong></td>
+                            <td colspan="4" ng-if="data.WOop == 999"> W.O Operation <strong><span style="background-color: #FFFF00">{{data.WOop}}</span></strong></td>
+                            <td colspan="3">Load Number {{data.loadNumber}} of {{data.numLoads}}</td>
+                        </tr>
+
+                        <tr>
+                            <td colspan="4">Coupons &nbsp;&nbsp;&nbsp;&nbsp;
+                                <label ng-if="data.coupons" for="couponcheck"><strong>YES</strong></label>
+                                <label ng-if="!data.coupons" for="couponcheck"><strong>NO</strong></label>
+                                <input type="checkbox" name="couponYescheckbox" id="couponcheck" ng-model="data.coupons" ng-change="update(data)">
+                                &nbsp;&nbsp;
+                                <!--<label for="couponNOcheck"><strong>NO</strong></label>-->
+                                <!--<input type="checkbox" name="couponNocheckbox" id="couponNOcheck" ng-model="data.coupons" ng-change="update(data)">-->
+                                &nbsp;&nbsp;
+                                <!--<strong>Init.<input type="text" ng-model="data.couponInit" ng-change="update(data)" style="width:40px"</strong>-->
+                                <select ng-model="data.couponInit" ng-options="op.operatorInitials as op.operatorInitials for op in Operatordata| filter:{userActive:true}" ng-change="update(data)" style="font-size:10px" ng-model-options='{ debounce: 1000 }'></select>
+
+                            </td>
+
+                            <td colspan="4">
+                                
+                                
+                                <label ng-if="data.visInspComplete" for="visInspCheck"><strong>Visual Inspection YES</strong></label>
+                                <label ng-if="!data.visInspComplete" for="visInspCheck"><strong>Visual Inspection NO</strong></label>
+                                <input type="checkbox" name="visInspCheckbox" id="visInspCheck" ng-model="data.visInspComplete" ng-change="update(data)"></td>
+                            <td ng-if="!data.operatorDone" colspan="3"><button ng-click="sendEmail(data, spec)" >CLICK WHEN COMPLETE</button></td>
+                            <td ng-if="data.operatorDone" colspan="3">SUBMITTED</td>
+                        </tr>
+                        <tr>
+                            <td colspan="4">Number of Pans - <strong>{{data.numPans}}</strong></td>
+                            <td colspan="4">Quantity(pieces) <strong>{{data.quantityLot}}</strong></td>
+                            <td colspan="3">Pounds - <strong>{{data.weightLot}}</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <table class="GeneratedTable" ng-model-options='{ debounce: 3000 }'>
+                    <tbody valign="top">
+                    <!-- Operator logged time info, soak time, date in, date out, etc -->
+                        <tr class="operatorInfo">
+                            <!-- Sizing acquired from operatorinfo CSS -->
+
+                            <td> Date In
+                                <p>
+                                <button ng-click="setDateInToday(data)"> Today </button>
+                                <input type="text" id="dateIn-{{data.id}}" ng-model="data.dateIn" ng-change="update(data)"  style="width: 80px">
+                            </td>
+                            <td>Furnace No
+                                <p></p>
+                               <select ng-model="furnace" ng-options="furnace.furnaceName for furnace in furnacedata" ng-change="updateFurnaceBox(data, spec, furnace)" style="font-size:10px" ng-model-options='{ debounce: 1000 }'></select>
+
+                                <!--<input type="text" ng-model="data.furnaceNo" ng-change="updateFurnaceNo(data)" style="width:50px" ng-model-options='{ debounce: 1000 }'/>-->
+                                <strong>{{data.furnaceNo}}</strong> 
+                                
+                            </td>
+                            <td >
+                                Operator In
+                                <p>
+                                <select ng-model="fred" ng-options="fred.operatorName for fred in Operatordata| filter:{userActive:true}" ng-change="updateOperatorIn(data, fred)" style="font-size:10px" ng-model-options='{ debounce: 1000 }'>
+                                </select>
+                                
+                                </p>
+                                <!--<input type="text" ng-model="data.operatorIn" ng-change="update(data)" style="width: 100px"/>-->
+                                <strong>{{data.operatorIn }}</strong>
+                            </td>
+                            <td>
+                                Time In:
+                                <input type="text" ng-model="data.timeIn " ng-change="updateTimeIn(data)" style="width: 65px" />
+
+                                <!--Change to:-->
+                                <!--<input type="time" step="1" id="toast" value="data.timeIn" ng-model="data.timeIn" ng-change="updateTime(data)" style="width: 85px" ng-model-options='{ debounce: 3000 }'/> -->
+                            </td>
+                            <td>
+                                Soak Start: 
+                                <output value="data.soakTimeStart">{{data.soakTimeStart}}</output>
+                                <p></p>
+                            
+                                <input type="text"  ng-model="data.soakTimeStart" ng-change="addSoakDur(data, spec); updateSoakStart(data);" style="width: 65px"  />
+                                
+                            </td>
+                            <!--<td><button ng-click="addSoakDuration(data.soakTimeStart,data.soakTime)">Soak End</button> -->
+                            <td>Soak End
+
+                                <p></p>
+                                <output><strong>{{data.soakTimeEnd}} </strong></output>
+                            </td>
+                            <td>DATE OUT
+                                <p></p>
+                                <button ng-click="setDateOutToday(data)">Today</button>
+                                <input type="text" id="dateOut-{{data.id}}" ng-model="data.dateOut" ng-change="update(data)" style="width:80px" />
+                            </td>
+                            <td>TIME OUT
+                                <p></p>
+                                <!--<button ng-click="setTimeOutNow(data)">Now</button>--><!-- Removed 10/3/19 - Time out is never now - they always have to go look at chart recorder-->
+                                <!-------------------------------------------------Testing updateTimeOut2 --------------->
+                                <input type="text" id="timeOut-{{data.id}}" ng-model="data.timeOut" ng-change="updateTimeOut2(data, spec)" style="width:60px" />
+                                
+                                <!-- Update time out to time out - soak start = process time soak-->
+                            </td>
+                            <td>Operator OUT
+                                <p></p>
+                                <select ng-model="bill" ng-options="bill.operatorName for bill in Operatordata | filter:{userActive:true}" ng-change="updateOperatorOut(data, bill)" style="font-size:10px" ng-model-options='{ debounce: 1000 }'></select>
+
+                                <strong>{{data.operatorOut}}</strong>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <table class="GeneratedTable" ng-model-options='{ debounce: 2500 }'>
+                    <tbody class="parameterInfo" align="center">
+                        <tr >
+                            <td colspan="3"><strong>Parameters</strong></td>
+                            <td colspan="1"><strong>Values Required</strong></td>
+                            <td colspan="1"><strong>Actual Values</strong></td>
+                        </tr>
+                       
+                       <tr>
+                            <td colspan="3" align="left">Parts Alkaline Cleaned before Heat Treatment</td>
+                            <td colspan="1" >Yes</td>
+                            <td colspan="1"><select ng-model="data.cleaningReq" ng-options="choice.yesNoChoice as choice.yesNoChoice for choice in polardata" ng-change="update(data)" style="font-size:10px"></td>
+                        </tr>
+                       
+                       <tr ng-if="spec.VFPHTSetPointLow != null && spec.VFPHTSetPointHigh != null">
+                            <td colspan="3" align="left">For VF (if applicable)-  Pre-heat Temperature set point(°F)</td>
+                            <td colspan="1" ng-if="spec.VFPHTSetPointLow != null && spec.VFPHTSetPointHigh != null">{{spec.VFPHTSetPointLow}} - {{spec.VFPHTSetPointHigh}} °F</td>
+                            <td colspan="1" ng-if="spec.VFPHTSetPointLow == null && spec.VFPHTSetPointHigh == null"> --</td> 
+                            
+                            <td colspan="1" ng-if="spec.VFPHTSetPointLow != null && spec.VFPHTSetPointHigh != null"><input type="text" ng-model="data.VFPHTSetPoint" ng-change="update(data)" style="width:60px" ng-model-options='{debounce:1000}'> °F</td>
+                            <td colspan="1" ng-if="spec.VFPHTSetPointLow == null && spec.VFPHTSetPointHigh == null"> --</td>                         
+                            
+                        </tr>
+                       
+                       <tr ng-if="spec.VFSoak != null"> <!-- Make all VF time items show if VFSoak is not null -->
+                            <td colspan="3" align="left">For VF (if applicable)-    Process Time(soak)</td>
+                            <td colspan="1" ng-if="spec.VFSoak != null">{{spec.VFSoak}} Minutes</td>
+                            <td colspan="1" ng-if="spec.VFSoak == null">--</td>
+
+                            <td colspan="1" ng-if="spec.VFSoak != null"><input type="text" ng-model="data.VFSoak" ng-change="update(data)" style="width:60px" ng-model-options='{debounce:1000}'></td>
+                            <td colspan="1" ng-if="spec.VFSoak == null">--</td>                        
+                        </tr>
+                       
+                       <tr ng-if="spec.VFSoak != null">
+                            <td colspan="3" align="left">For VF (if applicable)-    Time Tolerance - (Minutes)</td>
+                            <td colspan="1" ng-if="spec.VFSoak != null">+{{spec.VFMinusTimeTol}} Minutes</td>
+                            <td colspan="1" ng-if="spec.VFSoak == null">--</td>
+
+                            <td colspan="1" ng-if="spec.VFSoak != null"><input type="text" ng-model="data.VFMinusTimeTol" ng-change="update(data)" style="width:60px" ng-model-options='{debounce:1000}'></td>
+                            <td colspan="1" ng-if="spec.VFSoak == null">--</td>                        
+                        </tr>   
+                        
+                        <tr ng-if="spec.VFSoak != null">
+                            <td colspan="3" align="left">For VF (if applicable)-    Time Tolerance + (minutes)</td>
+                            <td colspan="1" ng-if="spec.VFSoak != null">-{{spec.VFPlusTimeTol}} Minutes</td>
+                            <td colspan="1" ng-if="spec.VFSoak == null">--</td>
+                            
+                            <td colspan="1" ng-if="spec.VFSoak != null"><input type="text" ng-model="data.VFPlusTimeTol" ng-change="update(data)" style="width:60px" ng-model-options='{debounce:1000}'></td>
+                            <td colspan="1" ng-if="spec.VFSoak == null">--</td>
+                        </tr>
+                       
+                       <tr>
+                            <td colspan="3" align="left">Temperature Set Point(°F)</td>
+                            <td colspan="1">{{spec.specTempSetPointLow}} - {{spec.specTempSetPointHigh}} °F</td>
+                            <td colspan="1" ng-if="!data.tempSetPointPref"><input type="text" id="tempSetPointBox"  ng-model="data.tempSetPoint" ng-change="updateTempSetPoint(data, spec)" style="width:70px"  ng-model-options='{ debounce: 1000 }' placeholder=" {{spec.specTempSetPointPref}} ">°F</input></td>
+                            <td colspan="1" ng-if="data.tempSetPointPref"><input type="text" id="tempSetPointBox" ng-model="data.tempSetPoint" ng-change="updateTempSetPoint(data, spec)" style="width:70px"  ng-model-options='{ debounce: 1000 }' placeholder=" {{data.tempSetPointPref}} ">°F</input></td>
+                        </tr>
+                       
+                       <tr>
+                            <td colspan="3" align="left">Uniformity Tolerance Temp. (+/- °F)</td>
+                            <td colspan="1"><strong>{{spec.specUniformityTol}}</strong> </td>
+                            <td colspan="1">
+                            <!--TEMP UNIFORMITY IS NOT USER DEFINED. IT IS SET FROM SPEC -- <input type="text" ng-model="data.uniformityTol" ng-change="update(data)" style="width:70px" placeholder="{{spec.specUniformityTol}}">°F</input> -->
+                            <strong>{{spec.specUniformityTol}}</strong> 
+                            </td>
+                        </tr>   
+                        
+                        <tr>
+                            <td colspan="3" align="left">Process Time (soak)*</td>
+                            <td colspan="1" ng-if="!data.overrideSoakTime"><strong>{{spec.specSoakTime}}</strong> Minutes</td>
+                            <td colspan="1" ng-if="data.overrideSoakTime"><strong>{{data.overrideSoakTime}}</strong> Minutes</td>
+                            <!-- Override Soak Time is for materials soaked by thickness, 6-4 Titanium, and spec RPS 12.01 -->
+                            
+                            <td colspan="1" ng-if="!data.soakTimePref"><input type="text" id="soaktime" ng-model="data.soakTime" style="width:55px" placeholder="{{spec.specSoakTimePref}}" disabled></input> Minutes</td> <!-- This needs to be Time out --->
+                            <td colspan="1" ng-if="data.soakTimePref"><input type="text" id="soaktime1" ng-model="data.soakTime" style="width:55px" placeholder="{{data.soakTimePref}}" disabled></input> Minutes</td> <!-- This needs to be Time out --->
+                        </tr>
+                       
+                       <tr>
+                            <td colspan="3" align="left">Time Tolerance - (Minutes)</td>
+                            <td colspan="1">- <strong>{{spec.specSoakMinusTimeTol}}</strong> Minutes</td>
+                            <td ng-if="data.soakTimeMinusTol <= spec.specSoakMinusTimeTol" colspan="1">- <strong> {{data.soakTimeMinusTol}}</strong> Minutes</td>
+                            <td ng-if="data.soakTimeMinusTol > spec.specSoakMinusTimeTol" style="color:red" colspan="1">- <strong> {{data.soakTimeMinusTol}}</strong> Minutes</td>
+                        </tr>
+                       
+                       <tr>
+                            <td colspan="3" align="left">Time Tolerance + (Minutes)</td>
+                            
+                            <td colspan="1" ng-if="!data.overrideSoakTimePlusTol">+<strong>{{spec.specSoakPosTimeTol}}</strong> Minutes</td>
+                            <td colspan="1" ng-if="data.overrideSoakTimePlusTol">+<strong>{{data.overrideSoakTimePlusTol}}</strong> Minutes</td>
+                            
+                            <td colspan="1" ng-if="!data.overrideSoakTimePlusTol"> 
+                                <il ng-if="data.soakTimePlusTol > spec.specSoakPosTimeTol" style="color:red"> +<strong>{{data.soakTimePlusTol}}</strong> Minutes </il>
+                                <il ng-if="data.soakTimePlusTol <= spec.specSoakPosTimeTol" > +<strong>{{data.soakTimePlusTol}}</strong> Minutes </il>
+                            </td>
+                            <td colspan="1" ng-if="data.overrideSoakTimePlusTol">
+                            +<strong> 
+                                <il ng-if="data.soakTimePlusTol > data.overrideSoakTimePlusTol" style="color:red"> +<strong> {{data.soakTimePlusTol}}</strong> Minutes</il>
+                                <il ng-if="data.soakTimePlusTol <= data.overrideSoakTimePlusTol" > +<strong> {{data.soakTimePlusTol}}</strong> Minutes</il>
+                           </td>
+                        
+                        </tr>
+                       
+                       <tr>
+                            <td colspan="3" align="left">For VF -   Heating Environment: Vacuum {{spec.specVFVacPressure}} microns or less <br> before heating. Argon Partial Pressure up to 400 Microns allowed.</td>
+                            <td colspan="1"><strong>{{spec.specVFVacPressure}} </strong> Microns or less</td>
+                            <td colspan="1"> 
+                                    <label for="ppcheckbox">Partial Pressure</label>
+                                    <input type="checkbox" name="partialPressureCheckbox" id="ppcheckbox" ng-model="data.partialPressure"/>
+                                    <br/>
+                                    <input type="text" id="VFVacPressureBox" ng-model="data.VFVacPressure" ng-change="updateVFVacPressure(data, spec)" style="width:70px" ng-model-options='{ debounce: 1000 }'/>
+                            </td>
+                        </tr>
+                       
+                       <tr>
+                            <td colspan="3" align="left">Load Thermocouple <br> **Must be loaded in the heaviest section** (Channel Number)</td>
+                            <td colspan="1">{{spec.specLoadTC}}</td>
+                            <td colspan="1" align="left">
+                                Channel #<strong>{{data.channelOne}}</strong>
+                                <br>
+                                Channel # <strong>{{data.channelTwo}}</strong>
+                            </td>
+                        </tr>
+                       
+                       <tr>
+                            <td colspan="3" align="left"><strong>For TMQ's-</strong> Heating Environment: Argon <br>
+                                <label for="tenPurgeCheck"><strong>10 Min Purge</strong></label>
+                                <input type="checkbox" name="tenMinPurgeCheckbox" id="tenPurgeCheck" ng-model="data.TMQTenPurge" ng-change="update(data)">
+                            </td>
+                            
+                            <td ng-if="data.furnaceNo == 'TMQ1' || data.furnaceNo == 'TMQ2' || data.furnaceNo == 'TMQ3' " colspan="1">{{spec.specTMQHeatLow}} - {{spec.specTMQHeatHigh}} CFH</td>
+                            <td ng-if="data.furnaceNo != 'TMQ1' && data.furnaceNo != 'TMQ2' && data.furnaceNo != 'TMQ3' " colspan="1">Not TMQ</td>
+                            
+                            <td ng-if="data.furnaceNo == 'TMQ1' || data.furnaceNo == 'TMQ2' || data.furnaceNo == 'TMQ3' " colspan="1"><input type="text" ng-model="data.TMQHeatEnv" ng-change="updateTMQHeatEnv(data, spec)" style="width:50px" ng-model-options='{ debounce: 1000 }'/> CFH</td>
+                            <td ng-if="data.furnaceNo != 'TMQ1' && data.furnaceNo != 'TMQ2' && data.furnaceNo != 'TMQ3' " colspan="1">No Input</td>
+                            
+                        </tr>
+                       <tr>
+                            <td colspan="3" align="left">Quench Method &nbsp;&nbsp;&nbsp;&nbsp;
+                                <label for="agitCheck"><strong>Agitation Req.</strong></label>
+                                <input type="checkbox" name="agitReqCheckbox" id="agitCheck" ng-model="data.agitReq" ng-change="update(data)" ></td>
+                            <!-- Per Daniel Moreno - the quench method choices should be based on the furnace No selection, not what the overall spec allows -->
+                            <!--<td colspan="1"><output ng-if="spec.specQuenchGFC">GFC</output>/<output ng-if="spec.specQuenchOil">Oil</output>/<output ng-if="spec.specQuenchWater"/>Water</output>/<output ng-if="spec.specQuenchAir">Air</output> </td> -->
+                            <td colspan="1"><output ng-if="data.furnaceNo == 'VF1' || data.furnaceNo == 'VF2'">GFC</output>/<output ng-if="data.furnaceNo == 'VF1'">OIL</output>/<output ng-if="data.furnaceNo == 'TMQ1' || data.furnaceNo == 'TMQ2' || data.furnaceNo == 'TMQ3'"/>WATER</output>/<output ng-if="data.furnaceNo == 'TMQ1' || data.furnaceNo == 'TMQ2' || data.furnaceNo == 'TMQ3'">AIR</output> </td>
+                            <td colspan="1">
+                                <select id="selectQuenchMethod" ng-model="data.quenchMethod" ng-change="updateQuenchMethod(data, spec)">
+                                    <option ng-if="data.furnaceNo == 'VF1' || data.furnaceNo == 'VF2'">GFC</option>
+                                    <option ng-if="data.furnaceNo == 'VF1'">OIL</option>
+                                    <option ng-if="data.furnaceNo == 'TMQ1' || data.furnaceNo == 'TMQ2' || data.furnaceNo == 'TMQ3'">WATER</option>
+                                    <option ng-if="data.furnaceNo == 'TMQ1' || data.furnaceNo == 'TMQ2' || data.furnaceNo == 'TMQ3'">AIR</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="3" align="left" ng-if="spec.specMaterial == '6-4 Titanium' || spec.specMaterial == '6-4 Titanium (DMD0781)' ">Titanium Quench Delay </td>
+                            <td colspan="1" ng-if="spec.specMaterial == '6-4 Titanium' || spec.specMaterial == '6-4 Titanium (DMD0781)' "> {{data.WQuenchDelaySpec}} seconds</td>
+                            <td colspan="1" ng-if="spec.specMaterial == '6-4 Titanium' || spec.specMaterial == '6-4 Titanium (DMD0781)' "> <input type="text" ng-model="data.WQuenchDelay" ng-change="updateTitaniumDelay(data, spec)" style="width:60px" id="actualtitaniumquenchdelay"/> seconds</td>
+                        
+                        </tr>
+                       <tr ng-if="data.quenchMethod == 'OIL' || data.quenchMethod == 'WATER' && spec.specNumber != 'AMS2801' ">
+                            <td colspan="3" align="left">Oil / Water Temperature before Quench</td>
+                            <td colspan="1">{{spec.specTempBeforeQuenchLow}}°F - {{spec.specTempBeforeQuenchHigh}}°F</td>
+                            <td colspan="1"><input type="text" id="tempBeforeQuenchBox" ng-model="data.tempBeforeQuench" style="width:70px" ng-change="updateQuenchBefore(data, spec)" ng-model-options='{ debounce: 1000 }' /> </td>
+                        </tr>
+                        <tr ng-if="data.quenchMethod == 'OIL' || data.quenchMethod == 'WATER' ">
+                            <td colspan="3" align="left">Oil / Water Temperature after Quench</td>
+                            <td colspan="1">Cannot exceed {{spec.specTempAfterQuenchMax}}°F</td>
+                            <td colspan="1"><input type="text" id="tempAfterQuenchBox" ng-model="data.tempAfterQuench" style="width:70px" ng-change="updateTempAfterQuench(data, spec)" ng-model-options='{ debounce: 1000 }'/> </td>
+                        </tr>
+                        <tr>
+                            <td colspan="3" align="left">Parts Alkaline cleaned after Quench</td>
+                            <td colspan="1">{{spec.specPartsCleanedAfterQuench}}</td>
+                            
+                            
+                            <td colspan="1">
+                                <select  ng-if="data.quenchMethod != ' ' && data.quenchMethod == 'OIL' " ng-model="data.partsCleaned"  ng-change="update(data)" style="font-size:10px;width70px" ng-model-options='{ debounce: 1000 }'>
+                                    <option>Yes</option>
+                                </select>
+                                <!-- <select ng-if="data.quenchMethod !=' ' && data.quenchMethod != 'Oil'" ng-model="data.partsCleaned" ng-options="choice.yesNoChoice as choice.yesNoChoice for choice in polardata" ng-change="update(data)" style="font-size:10px;width70px" ng-model-options='{ debounce: 1000 }'>-->
+                                <select ng-if="data.quenchMethod !=' ' && data.quenchMethod != 'OIL'" ng-model="data.partsCleaned"  ng-change="update(data)" style="font-size:10px;width70px" ng-model-options='{ debounce: 1000 }'>
+                                    <option>No</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="5" align="left">*Soak time begins when the load thermocouple reaches the minimum of the uniformity tolerance temperature* <br>
+                                **Load thermocouple(s) must be placed in the heaviested section of the Load. See Heat Treat Manager if you have
+                                any questions on positioning of the load thermocopule (t/c). <br>
+                                <strong>
+                                    Furnace, thermocouples, furnace controls, oven temperature alarms, baskets, racks, fixtures are in good condition
+                                    <input type="checkbox" name="goodConditionCheckbox" ng-model="data.goodCond" ng-change="update(data)"  >
+                                </strong>
+                            </td>
+                        </tr>
+
+                    </tbody>
+                </table>
+
+                <table class="GeneratedTable">
+                    <tbody>
+                        <tr>
+                            <td>
+                                Generated By: <br>
+                                {{data.genBy}}
+                            </td>
+                            <td>
+                            Generated Date:<br>
+                            {{data.genDate}}
+                            </td>
+                            <td>
+                                TTPI Reviewed By: <br>
+                                <div ng-if="data.reviewBy != null"> {{data.reviewBy}} <br> </div>
+                                <div ng-if="data.reviewBy == null">_________</div>
+
+                            </td>
+                            <td>
+                            Reviewed Date:
+                                <div ng-if="data.reviewDate != null"> {{data.reviewDate}} <br> </div>
+                                <div ng-if="data.reviewDate == null">_________</div>                           
+                             </td>
+                            
+                            <td>
+                                <input type="checkbox" ng-model="data.PWAMCL" ng-change="update(data)">PWA MCL Manual Section F-22 & F-40</input>
+                                <br>
+                                <input type="checkbox" ng-model="data.PWABatchControl" ng-change="update(data)">Batch Control PWA-ASQR-20.1</input>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+        
+
+            </page>
+            <div class="page-break"></div>
+            </div>
+            </div>
+            
+        {% endverbatim %}
+        
+
+<br >
+<footer style="page-break-after: always">
+
+
+
+
+
+    </body>
+</html>
+
+{% endblock %}

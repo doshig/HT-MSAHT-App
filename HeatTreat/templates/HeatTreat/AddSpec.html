@@ -1,0 +1,247 @@
+{% extends "Homepage/header.html" %}
+
+
+{% block content %}
+{%load staticfiles%}
+
+<!DOCTYPE html>
+<style>
+form {
+	padding-top: 20px;
+	padding-left: 14px;
+	width : 100%;
+	color: black;
+	font-weight:bold;
+}
+
+.btnokcount{
+	font-weight:bold;
+}
+
+.okdep {
+	color:green;
+}
+
+.nookdep {
+	color:red;
+}
+
+div.container1 {
+  font-weight: bold;
+  background-color: white ;
+  width: 100%;
+  overflow: scroll;
+  padding : 10px;
+}
+
+.table {
+	font-size: 14px;
+	color:black;
+}
+
+thead, tbody {
+	padding : 2px;
+}
+
+tr.listtoschedule:hover {
+
+	background-color: #CACFD2 ;
+	
+}
+
+td.tdschedulelist {
+	
+	padding-top:1px;
+	padding-bottom:1px;
+	overflow:hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+
+}
+
+td.tdright {
+	
+	padding-top:1px;
+	padding-bottom:1px;
+	overflow:hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	color: green;
+
+}
+td.tdwrong {
+	
+	padding-top:2px;
+	padding-bottom:2px;
+	overflow:hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	color: red;
+
+}
+
+table{
+border: 1px solid black;
+    font-color:black
+
+}
+
+</style>
+<head>
+    <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.7/angular.min.js"></script>
+    <script src="{% static 'HeatTreat/HeatTreat.js' %}"> </script>
+    
+</head>
+
+    <body ng-app="HT.HeatTreat" >
+
+        {% verbatim%}
+        <div ng-controller="HeatTreatController">
+         <p><p>
+         <!-- 08/14/19 moved authentication/login to views.py using django mixins -->
+         <!-- hide or display -->
+        <div style="color:black"> Create New Spec: <input type="checkbox" ng-model="createNewSpec"/></div>
+         
+             <table class="table" style="width:40%" ng-hide="!createNewSpec">  
+                 <tr>
+                     <th>Add new specification to list:</th>
+                     <th></th>
+                     <th></th>
+                </tr>
+        
+                 <tr>  
+                    <td><label for="specNum">Specification Number:</label></td>
+                    <td><input type="text" id="specNum" ng-model="specNumber" placeholder="specNumber"></input></td>
+                    <td></td>
+        
+                </tr>
+                <tr>
+                    <td><label for="specRev">Specification Revision:</label></td>
+                    <td><input type="text" id="specRev" ng-model="specRevision" placeholder="specRevision"></input></td>
+                    <td></td>
+                 </tr>
+                    <tr>
+                    <td><label for="specMat">Specification Material:</label></td>
+                    <td><select ng-model="mat" ng-options="mat.materialName for mat in materialdata" ></td>
+                    <!--<td><input type="text" id="specMat" ng-model="specMaterial" placeholder="specMaterial"></input></td>-->
+                    <td><button ng-click="openMaterialsPage()">Open Material Page</button></td>
+                </tr>
+                <tr>
+                    <p>
+                    <td><label for="specMatSpec">Specification Material Spec.:</label></td>
+                    <td><input type="text" id="specMatSpec" ng-model="specMaterialSpec" placeholder="specMaterialSpec"></input></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td><label for="specMatSpecRev">Specification Mat Spec rev.:</label></td>
+                    <td><input type="text" id="specMatSpecRev" ng-model="specMaterialSpecRevision" placeholder="specMaterialSpecRevision"></input></td>
+                    <td></td>
+        
+      
+                <tr>
+                    <td></td>
+                    <td><button ng-click="addSpecification(specNumber,specRevision,mat.materialName,specMaterialSpec,specMaterialSpecRevision)"> Add New Specification </button></td>
+                    <td></td>
+                </tr>
+            </table>
+        
+        <!-- select or de-select the Copy existing spec dialog -->
+        <div style="color:black"> Copy Existing Spec Into New Spec: <input type="checkbox" ng-model="copySpec"/></div>
+        
+            <table class="table" style="width:50%" ng-hide="!copySpec">  
+                 <tr>
+                     <th>Copy Existing Spec Into New Spec:</th>
+                </tr>
+                <tr>
+                     <td>Spec To Copy:</td>
+                     <td><select id="specNum" ng-model="fred" ng-options="spec as spec.specNumber +' Rev. ' + spec.specRevision + ' Material Spec ' + spec.specMaterialSpec + ' REV. ' +spec.specMaterialSpecRevision  for spec in specdata | filter:{mostCurrent : true}|unique : 'specNumber' "/></td>
+                </tr>
+                <tr>
+                     
+                </tr>
+                <tr>
+                     <td>New Spec: </td>
+                     <td> New: <input type="text" ng-model="newSpec"> Old: {{fred.specNumber}}</input></td>
+                <tr>
+                     <td>New Spec Revision: </td>
+                     <td>New: <input type="text" ng-model="newSpecRev"> Old: {{fred.specRevision}}</input></td>
+                </tr>
+                     <td>New Material Spec:</td>
+                     <td>New: <input type="text" ng-model="newMatSpec"> Old: {{fred.specMaterialSpec}}</input></td>
+                <tr>
+                     <td>New Material Spec Revision: </td>
+                     <td> New: <input type="text" ng-model="newMatSpecRev"> Old: {{fred.specMaterialSpecRevision}}</input></td>
+                </tr>
+                <tr>
+                    <td> New Material: </td>
+                    <td> {{fred.specMaterial}}</td>
+                <tr>
+                    <td></td>
+                    <td><button ng-click="addSpecification(newSpec,newSpecRev,fred.specMaterial,newMatSpec,newMatSpecRev)"> Add New Specification </button></td>
+                </tr>
+            </table>
+        
+        <br>
+        
+        
+        <table class="table">
+            <thead>
+                <tr class="table-dark">
+                    <th scope="col" style="padding-top:1px;padding-bottom:1px;">Number</th>
+        				  <th scope="col" style="padding-top:1px;padding-bottom:1px;">Revision</th>
+        				  <th scope="col" style="padding-top:1px;padding-bottom:1px;">Material</th>
+        				  <th scope="col" style="padding-top:1px;padding-bottom:1px;">Material Spec</th>
+        
+        				  <th scope="col" style="padding-top:1px;padding-bottom:1px;">Material Spec Revision </th>
+        				  <th scope="col" style="padding-top:1px;padding-bottom:1px;">Form Revision </th>
+        				  <th scope="col" style="padding-top:1px;padding-bottom:1px;">Reviewed By</th>
+        				  <th scope="col" style="padding-top:1px;padding-bottom:1px;">Reviewed Date</th>
+        				  <th scope="col" style="padding-top:1px;padding-bottom:1px;">Approved By</th>
+        				  <th scope="col" style="padding-top:1px;padding-bottom:1px;">Most Recent?</th>
+        				  <th scope="col" style="padding-top:1px;padding-bottom:1px;">Button</th>
+        			<tr>
+    				<tr>
+        				<td><input type="text" ng-model="filterNumber" style="width:100px"/></td>
+        				<td><input type="text" ng-model="filterRevision" style="width:100px"/></td>
+        				<td><input type="text" ng-model="filterMaterial" style="width:100px"/></td>
+        				<td><input type="text" ng-model="filterMaterialSpec" style="width:60px"/></td>
+        				<td><input type="text" ng-model="filterMaterialSpecRev" style="width:60px"/></td>
+        				<td><input type="text" ng-model="filterFormRev" style="width:60px"/></td>
+        				<td></td>
+        				<td></td>
+        				<td>
+            				<button ng-click="filterPendingButton()">Toggle Approved</button>
+        				<td>
+            				<button ng-click="filterMostRecentButton()">Toggle Recent</button>
+        				</td>
+        				<td></td>
+        			</tr>
+        		</thead>
+        		<tbody>
+        		<tr ng-repeat="spec in specdata|filter:{specNumber:filterNumber,specRevision:filterRevision,specMaterial:filterMaterial,specMaterialSpec:filterMaterialSpec,specMaterialSpecRevision:filterMaterialSpecRev,specFormRevision:filterFormRev, specMasterApproved:filterPending, mostCurrent:filterMostRecent  }|orderBy:['specNumber','specRevision','specMaterial','specMaterialSpecRevision','specFormRevision']">
+                <td>{{spec.specNumber}}</td>
+                <td>{{spec.specRevision}}</td>
+                <td>{{spec.specMaterial}}</td>
+                <td>{{spec.specMaterialSpec}}</td>
+                <td>{{spec.specMaterialSpecRevision}}</td>
+                <td>{{spec.specFormRevision}} </td>
+                <td>{{spec.specMasterReviewed}} </td>
+                <td>{{spec.specFormRevDate}} </td>
+                <td>{{spec.specMasterApproved}}</td>
+                <td ng-if="spec.mostCurrent">YES</td>
+                <td ng-if="!spec.mostCurrent">NO</td>
+                <td>
+                    <button ng-if="!spec.specLocked" id="loadEditSpec" ng-click="openPageThenEdit(spec)">Edit Spec</button>
+                    <button ng-if="spec.specLocked" id="loadEditSpec" ng-click="openPageThenEdit(spec)">View Spec</button>
+                    
+                    <button ng-if="spec.mostCurrent"  ng-click="increaseSpecFormRev(spec)">Copy then Increase Form Rev </button>
+                </td>
+            </tr>
+
+        {%endverbatim%}
+
+
+    </body>
+
+{% endblock %}

@@ -1,0 +1,16 @@
+<!--# -*- coding: utf-8 -*-
+"""
+Created on Wed Feb 13 14:44:22 2019
+
+@author: stefflc
+""" -->
+
+
+{% extends "Homepage/header.html" %}
+
+    {% block content %}
+    <div style="color:black">
+      <p>Logged out!</p>  
+      <a href="{% url 'login'%}">Click here to login again.</a>
+    {% endblock %}
+</div>

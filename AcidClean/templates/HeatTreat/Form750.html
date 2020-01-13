@@ -1,0 +1,400 @@
+{% extends "Homepage/header.html" %}
+
+{% block content %}
+{% load staticfiles %}
+
+<!DOCTYPE html>
+<!-- saved from url=(0088)https://s.codepen.io/boomerang/iFrameKey-a33f01ed-2888-534d-cb62-0e397663fc6d/index.html -->
+<html lang="en" class=" -webkit-" xmlns:size="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<!--<script src="/console_runner-ce3034e6bde3912cc25f83cccb7caa2b0f976196f2f2d52303a462c826d54a73.js.download"></script>-->
+	<!--<script src="/css_live_reload_init-e9c0cc5bb634d3d14b840de051920ac153d7d3d36fb050abad285779d7e5e8bd.js.download"></script>-->
+	<meta name="robots" content="noindex">
+	<link rel="shortcut icon" type="image/x-icon" href="https://static.codepen.io/assets/favicon/favicon-8ea04875e70c4b0bb41da869e81236e54394d63638a1ef12fa558a4a835f1164.ico">
+	<link rel="mask-icon" type="" href="https://static.codepen.io/assets/favicon/logo-pin-f2d2b6d2c61838f7e76325261b7195c27224080bc099486ddd6dccb469b8e8e6.svg" color="#111">
+	<link rel="canonical" href="https://codepen.io/rafaelcastrocouto/pen/LFAes">
+
+<style class="cp-pen-styles">
+table.GeneratedTable {
+  width: 100%;
+  background-color: #ffffff;
+  border-collapse: collapse;
+  border-width: 2px;
+  border-color: #000000;
+  border-style: solid;
+  color: #000000;
+}
+
+table.GeneratedTable td, table.GeneratedTable th {
+  border-width: 2px;
+  border-color: #000000;
+  border-style: solid;
+  padding: 3px;
+
+}
+
+table.GeneratedTable thead {
+  background-color: #ffffff;
+}
+
+.operatorInfo{
+    font-size:10pt;
+}
+.parameterInfo{
+    font-size:10pt;
+    padding: 0px;
+    margin: 0px;
+    height: 0.5px;
+}
+
+
+body {
+  background: rgb(204,204,204);
+}
+page {
+  background: white;
+  display: block;
+  margin: 0 auto;
+  margin-bottom: 1in;
+  margin-top: 0.5cm;
+  box-shadow: 0 0 0.5cm rgba(0,0,0,0.5);
+}
+page[size="A4"] {
+  width: 21cm;
+  height: 29.7cm;
+}
+page[size="A4"][layout="portrait"] {
+  width: 29.7cm;
+  height: 21cm;
+}
+form{
+    color: black;
+    font-weight:bold;
+}
+
+
+@media print {
+  body, page {
+    margin: 0;
+    box-shadow: 0;
+  }
+
+
+}</style></head>
+
+    <body ng-app="HT.AcidClean">
+        {% verbatim%}
+        <div ng-controller="AcidCleanController">
+            <form>
+               <button class="testUIButton" id="testClickButton" ng-click="runTest()" style="height:80px;">Big Test Button</button>
+                <!--{{HeatTreat.testOutput}}-->
+               <!--<button class="testUIButton" id="testClickButton" ng-click="{% url "HeatTreat:testOutput" %}" style="height:80px;">Big Test Button</button>-->
+
+                <script>console.log('HTML', 666666666666666666666666666666666666666666666666666)</script>
+
+            </form>
+
+            <page size="A4">
+
+
+                <!-- TTPI Header area-->
+                <!-- I.E. MS Aerospace logo etc -->
+                <table class="GeneratedTable">
+                  <tbody>
+                    <tr>
+                        <td rowspan="3"> WUBB</td>
+                        <td rowspan="2">Thermal Treatment<br> Process Instructions</td>
+                        <td rowspan="1" colspan="3">Inconel 718 Solution Treat I.A.W.</td>
+                        <td rowspan="2">REV: 001*</td>
+                    </tr>
+
+
+                    <tr>
+                        <td colspan="3"> C50TF13 REV S20</td>
+                    </tr>
+
+                    <tr>
+                      <td>Reviewed By</td>
+                      <td>D.Moreno</td>
+                      <td>Approed By</td>
+                      <td>V Ganzha</td>
+                      <td>03/02/17</td>
+                    </tr>
+                  </tbody>
+                </table>
+                <!-- TTPI central body area - material, p/n, customer, PO, coupons, operator info -->
+                <table class="GeneratedTable">
+                    <tbody>
+                        <tr>
+                            <td colspan="11">Process Solution Treat I.A.W. C50TF13 Rev S20 & MSAP 7.10 Solution Treat 1750F - 1800F holding +/- 25F and fra;lkjs;ldfa;lsdknf;alskndf;laskndf;laskdnf</td>
+                        </tr>
+                        <tr>
+                            <td colspan="11">Material -<strong> Inconel 718 I.A.W. C50TF13 REV S20</strong></td>
+                        </tr>
+                        <tr>
+                            <td colspan="6">Part Number <strong>Rowdy rowdy REV A</strong></td>
+                            <td colspan="5">Work Order Number 10-1557/1S2</td>
+                        </tr>
+
+                        <tr>
+                            <td colspan="6">Customer <strong>GE</strong> <br>PO <strong> 156</strong></td>
+                            <td colspan="5" align="right">Furnace Capability
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                <label for="VF1check"><strong>VF1</strong></label>
+                                 <input type="checkbox" name="VF1checkbox" id="VF1check" >
+                                &nbsp;&nbsp;&nbsp;&nbsp;
+                                <label for="VF2check"><strong>VF2</strong></label>
+                                <input type="checkbox" name="VF2checkbox" id="VF2check" >
+                                &nbsp;&nbsp;&nbsp;&nbsp;
+                                <strong> </strong> <input type="checkbox" name="blankcheckbox" >
+
+                                <br>
+                                <label for="TMQ1check"><strong>TMQ1</strong></label>
+                                <input type="checkbox" name="TMQ1checkbox" id="TMQ1check">
+                                &nbsp;&nbsp;&nbsp;&nbsp;
+                                <label for="TMQ2check"><strong>TMQ2</strong></label>
+                                <input type="checkbox" name="TMQ2checkbox" id="TMQ2check">
+                                &nbsp;&nbsp;&nbsp;&nbsp;
+                                <label for="TMQ3check"><strong>TMQ3</strong></label>
+                                <input type="checkbox" name="TMQ3checkbox" id="TMQ3check">
+                                </td>
+                        </tr>
+
+                        <tr>
+                            <td colspan="4">Heat Number <strong>2514</strong></td>
+                            <td colspan="4">W.O Operation <strong>254</strong></td>
+                            <td colspan="3">Load Number<strong>1 of 1</strong></td>
+                        </tr>
+
+                        <tr>
+                            <td colspan="4">Coupons &nbsp;&nbsp;&nbsp;&nbsp;
+                                <label for="couponcheck"><strong>YES</strong></label>
+                                <input type="checkbox" name="couponYescheckbox" id="couponcheck">
+                                &nbsp;&nbsp;
+                                <label for="couponNOcheck"><strong>NO</strong></label>
+                                <input type="checkbox" name="couponNocheckbox" id="couponNOcheck">
+                                &nbsp;&nbsp;
+                                <strong>Int____</strong>
+                            </td>
+
+                            <td colspan="4">
+                                <label for="visInspCheck"><strong>Visual Inspection</strong></label>
+                                <input type="checkbox" name="visInspCheckbox" id="visInspCheck"></td>
+                            <td colspan="3"></td>
+                        </tr>
+                        <tr>
+                            <td colspan="4">Number of Pans - <strong>19</strong></td>
+                            <td colspan="4">Quantity(pieces) <strong>7525</strong></td>
+                            <td colspan="3">Pounds - <strong>580</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <table class="GeneratedTable">
+                    <tbody>
+                    <!-- Operator logged time info, soak time, date in, date out, etc -->
+                        <tr class="operatorInfo">
+                            <!-- Sizing acquired from operatorinfo CSS -->
+
+                            <td>  Date In
+                                <p></p>
+                                Today
+                            </td>
+                            <td>Furnace No
+                                <p></p>
+                                Hi
+                            </td>
+                            <td>Operator In
+                                <p></p>
+                                Gooby
+                            </td>
+                            <td>Time In
+                                <p></p>
+                                Afternoon
+                            </td>
+                            <td>Pre Heat Start
+                                <p></p>
+                                --
+                            </td>
+                            <td>Pre-Heat End
+                                <p></p>
+                                --
+                            </td>
+                            <td>Soak Start
+                                <p></p>
+                                1:25
+                            </td>
+                            <td>Soak End
+                                <p></p>
+                                1:25 + Soak Time
+                            </td>
+                            <td>DATE OUT
+                                <p></p>
+                                tomorrow
+                            </td>
+                            <td>TIME OUT
+                                <p></p>
+                                2;55
+                            </td>
+                            <td>Operator OUT
+                                <p></p>
+                                Gooby
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <table class="GeneratedTable">
+                    <tbody class="parameterInfo" align="center">
+                        <tr >
+                            <td colspan="3">Parameters</td>
+                            <td colspan="1">Values Required</td>
+                            <td colspan="1">Actual Values</td>
+                        </tr>
+                       <tr>
+                            <td colspan="3" align="left">Parts Alkaline Cleaned before Heat Treatment</td>
+                            <td colspan="1">Yes</td>
+                            <td colspan="1"></td>
+                        </tr>
+                       <tr>
+                            <td colspan="3" align="left">For VF (if applicable)-  Pre-heat Temperature set point(°F)</td>
+                            <td colspan="1"></td>
+                            <td colspan="1"></td>
+                        </tr>
+                       <tr>
+                            <td colspan="3" align="left">For VF (if applicable)-    Process Time(soak)</td>
+                            <td colspan="1">Values Required</td>
+                            <td colspan="1">Actual Values</td>
+                        </tr>
+                       <tr>
+                            <td colspan="3" align="left">For VF (if applicable)-    Time Tolerance - (Minutes)</td>
+                            <td colspan="1"></td>
+                            <td colspan="1"></td>
+                        </tr>   <tr>
+                            <td colspan="3" align="left">For VF (if applicable)-    Time Tolerance + (minutes)</td>
+                            <td colspan="1"></td>
+                            <td colspan="1"></td>
+                        </tr>
+                       <tr>
+                            <td colspan="3" align="left">Temperature Set Point(°F)</td>
+                            <td colspan="1">1750°F - 1800°F</td>
+                            <td colspan="1">1775°F</td>
+                        </tr>
+                       <tr>
+                            <td colspan="3" align="left">Uniformity Tolerance Temp. (+/- °F)</td>
+                            <td colspan="1">25°F </td>
+                            <td colspan="1">25°F</td>
+                        </tr>   <tr>
+                            <td colspan="3" align="left">Process Time (soak)*</td>
+                            <td colspan="1">60 Minutes</td>
+                            <td colspan="1">60 Minutes</td>
+                        </tr>
+                       <tr>
+                            <td colspan="3" align="left">Time Tolerance - (Minutes)</td>
+                            <td colspan="1">- 0 Minutes</td>
+                            <td colspan="1"></td>
+                        </tr>
+                       <tr>
+                            <td colspan="3" align="left">Time Tolerance + (Minutes)</td>
+                            <td colspan="1">+12 Minutes</td>
+                            <td colspan="1"></td>
+                        </tr>
+                       <tr>
+                            <td colspan="3" align="left">For VF -   Heating Environment: Vacuum 50 microns max req.<br> before heating. Argon Partial Pressure up to 400 Microns allowed.</td>
+                            <td colspan="1">50 Microns or less</td>
+                            <td colspan="1">
+                                <label for="ppcheckbox">Partial Pressure</label>
+                                <input type="checkbox" name="partialPressureCheckbox" id="ppcheckbox">
+                            </td>
+                        </tr>
+                       <tr>
+                            <td colspan="3" align="left">Load Thermocouple <br> **Must be loaded in the heaviest section** (Channel Number)</td>
+                            <td colspan="1">Yes (X2 for TMQ's)</td>
+                            <td colspan="1" align="left">Channel # <br> Channel #</td>
+                        </tr>
+                       <tr>
+                            <td colspan="3" align="left"><strong>For TMQ's-</strong> Heating Environment: Argon <br>
+                                <label for="tenPurgeCheck"><strong>10 Min Purge</strong></label>
+                                <input type="checkbox" name="tenMinPurgeCheckbox" id="tenPurgeCheck">
+                            </td>
+                            <td colspan="1">25 - 50 CFH</td>
+                            <td colspan="1"></td>
+                        </tr>
+                       <tr>
+                            <td colspan="3" align="left">Quench Method &nbsp;&nbsp;&nbsp;&nbsp;
+                                <label for="agitCheck"><strong>Agitation Req.</strong></label>
+                                <input type="checkbox" name="agitReqCheckbox" id="agitCheck" ></td>
+                            <td colspan="1">GFC / Oil / Water/    </td>
+                            <td colspan="1"></td>
+                        </tr>
+                       <tr>
+                            <td colspan="3" align="left">Oil / Water Temperature before Quench</td>
+                            <td colspan="1">60°F - 160°F</td>
+                            <td colspan="1"></td>
+                        </tr>
+                        <tr>
+                            <td colspan="3" align="left">Oil / Water Temperature after Quench</td>
+                            <td colspan="1">Cannot exceed 200°F</td>
+                            <td colspan="1"></td>
+                        </tr>
+                        <tr>
+                            <td colspan="3" align="left">Parts Alkaline cleaned after Quench</td>
+                            <td colspan="1">Yes if Oil Quenched</td>
+                            <td colspan="1"></td>
+                        </tr>
+                        <tr>
+                            <td colspan="5" align="left">*Soak time begins when the load thermocouple reaches the minimum of the uniformity tolerance temperature* <br>
+                                **Load thermocouple(s) must be placed in the heaviested section of the Load. See Heat Treat Manager if you have
+                                any questions on positioning of the load thermocopule (t/c). <br>
+                                <strong>
+                                    Furnace, thermocouples, furnace controls, oven temperature alarms, baskets, racks, fixtures are in good condition
+                                    <input type="checkbox" name="goodConditionCheckbox"  >
+                                </strong>
+                            </td>
+                        </tr>
+
+                    </tbody>
+                </table>
+
+                <table class="GeneratedTable">
+                    <tbody>
+                        <tr>
+                            <td>
+                                TTPI Generated By: <br>
+                                D. Moreno &nbsp;&nbsp;&nbsp;&nbsp; 9/19/18
+                            </td>
+                            <td>
+                                TTPI Reviewed By: <br>
+
+                                _________&nbsp;&nbsp;&nbsp;&nbsp;________
+
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!-- Parameter List / Values List / Actual Values List -->
+
+                <!--<page size="A4"></page>-->
+                <!--<page size="A4" layout="portrait"></page>-->
+                <!--<page size="A5"></page>-->
+                <!--<page size="A5" layout="portrait"></page>-->
+                <!--<page size="A3"></page>-->
+                <!--<page size="A3" layout="portrait"></page>-->
+
+            </page>
+        </div>
+        {% endverbatim %}
+
+
+        <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular.min.js"></script>
+        <script src="{% static 'HeatTreat/HeatTreat.js' %}"> </script>
+
+
+
+    </body>
+</html>
+
+{% endblock %}

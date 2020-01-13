@@ -1,0 +1,68 @@
+{% extends "Homepage/header.html" %}
+
+
+{% block content %}
+{%load staticfiles%}
+
+<!DOCTYPE html>
+
+<head>
+    <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.7/angular.min.js"></script>
+    <!-- 04/03/19 - Update the .JS so it always downloads a new one. This is done by appending random number to the end which tricks browser to get a new copy -->
+    <!-- 08/14/19 moved authentication/login to views.py using django mixins -->
+    
+    <script>document.write('<script src="{% static 'HeatTreat/HeatTreat.js' %}?ver=' + Math.floor(Math.random() * 100) + '"\><\/script>');</script>
+    
+</head>
+
+
+    <body ng-app="HT.HeatTreat" >
+        
+        {% verbatim%}
+        <div ng-controller="HeatTreatController" style="color:black">
+        <p>
+        <div style="color:black"><strong>Edit existing materials, just type:</strong></div>
+        <label for="canEdit" style="color:black"> Click to edit Solution Treat Materials: </label>
+        <input type="checkbox" ng-model="canEdit" id="canEdit"></input>
+            <div ng-repeat="data in materialdata |filter:{solutionMaterial : true}">
+                <div ng-if="canEdit == False || canEdit == '' " style="color:black"> {{data.materialName}}</div>
+                <input  ng-if="canEdit" type="text" ng-model="data.materialName" ng-change="updateMaterialList(data, spec)" ng-model-options='{ debounce: 1000 }' style="width:250px" > <!--</input><input ng-if="canEdit" ng-model="data.solutionMaterial"></input>-->
+
+            </div>
+        <p><p>
+        <div style="color:black; size:16px"><strong>Add new material to list: </strong></div>
+         Please select at least one checkbox from the list below:<br>
+        
+        
+            <label for="solutionYes"> Solution Treat Material: </label>
+                <input type="checkbox" id="solutionYes" ng-model="solutionYes" />
+                <br>
+            <label for="hardenYes"> Harden Material: </label>
+                <input type="checkbox" id="hardenYes" ng-model="hardenYes" />
+                <br>  
+            <label for="temperYes"> Temper Treat Material: </label>
+                <input type="checkbox" id="temperYes" ng-model="temperYes" />
+                <br>          
+            <label for="ageYes"> Age Treat Material: </label>
+                <input type="checkbox" id="ageYes" ng-model="ageYes" />   
+                <br>         
+            <label for="normalizeYes"> Normalize Treat Material: </label>
+                <input type="checkbox" id="normalizeYes" ng-model="normalizeYes" />
+                <br>
+            <label for="annealYes"> Anneal Treat Material: </label>
+                <input type="checkbox" id="annealYes" ng-model="annealYes" />              
+                <br>
+        <input type="text" ng-model="newMaterial" placeholder="New Material"></input>
+        
+        <button ng-click="addSolutionMaterial(newMaterial, solutionYes, hardenYes, temperYes, ageYes, normalizeYes, annealYes)"> Add Material </button>
+
+            
+        </div>
+
+        {%endverbatim%}
+    </body>
+
+
+
+{% endblock %}

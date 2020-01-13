@@ -1,0 +1,508 @@
+{% extends "Homepage/header.html" %}
+
+{% block content %}
+{% load static %}
+
+
+<!DOCTYPE html>
+<!-- saved from url=(0088)https://s.codepen.io/boomerang/iFrameKey-a33f01ed-2888-534d-cb62-0e397663fc6d/index.html -->
+<html lang="en" class=" -webkit-">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<!--<script src="./console_runner-ce3034e6bde3912cc25f83cccb7caa2b0f976196f2f2d52303a462c826d54a73.js.download"></script>-->
+	<!--<script src="./css_live_reload_init-e9c0cc5bb634d3d14b840de051920ac153d7d3d36fb050abad285779d7e5e8bd.js.download"></script>-->
+	<meta name="robots" content="noindex">
+	<link rel="shortcut icon" type="image/x-icon" href="https://static.codepen.io/assets/favicon/favicon-8ea04875e70c4b0bb41da869e81236e54394d63638a1ef12fa558a4a835f1164.ico">
+	<link rel="mask-icon" type="" href="https://static.codepen.io/assets/favicon/logo-pin-f2d2b6d2c61838f7e76325261b7195c27224080bc099486ddd6dccb469b8e8e6.svg" color="#111">
+	<link rel="canonical" href="https://codepen.io/rafaelcastrocouto/pen/LFAes">
+    <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.7/angular.min.js"></script>
+    <!-- 04/03/19 - Update the .JS so it always downloads a new one. This is done by appending random number to the end which tricks browser to get a new copy -->
+    <script>document.write('<script src="{% static 'HeatTreat/HeatTreat.js' %}?ver=' + Math.floor(Math.random() * 100) + '"\><\/script>');</script>
+
+   <!--<script src="{% static 'HeatTreat/HeatTreat.js' %}?1"> </script>	-->
+	
+
+	
+<style class="cp-pen-styles">
+
+table.GeneratedTable {
+  width: 100%;
+  font-size: 11px;
+  font-family: "Calibri";
+  background-color: #ffffff;
+  border-collapse: collapse;
+  border-width: 6px;
+  border-color: #000000;
+  border-style: double;
+  color: #000000;
+}
+
+table.GeneratedTable td, table.GeneratedTable th {
+  border-width: 1px;
+  border-color: #000000;
+  border-style: solid;
+  padding: 0px;
+
+}
+
+table.GeneratedTable thead {
+  background-color: #ffffff;
+}
+td.noBorder td{
+border: 0;
+}
+
+table.SignatureTable{
+    align-items: right;
+    margin-right:50px;
+    width:36%;
+    color: #000000;
+
+}
+table.SignatureTable td{
+    width: 18%;
+    text-align: center;
+
+}
+
+
+
+page[size="A4"][layout="portrait"] {
+  width: 29.7cm;
+  height: 21cm;
+}
+page {
+  background: white;
+  display: block;
+  margin: 0 auto;
+  margin-bottom: 0.5cm;
+  box-shadow: 0 0 0.5cm rgba(0,0,0,0.5);
+}
+body {
+  background: rgb(204,204,204);
+}
+
+
+@media print{ @page {size: landscape}
+    .no-print, .no-print *{
+    
+        display: none !important;
+    }
+
+}
+
+</style></head>
+<body ng-app="HT.HeatTreat">
+
+{% verbatim %}
+<!-- 3/29/19 - Edit process specifications to be correct data spec number; update spec temp to show range; update spec time to NOT show range; 
+No preferred spec soak time, so just used regular spec soak time -->
+<!-- 3/29/19 - Allow user to write in comments area. This requires new override flag in models -->
+
+
+
+    <div ng-controller="HeatTreatController" class="OnLoadCertPrinter"  >
+        <input class='no-print' type="text" id="filterPrintWorkorder" ng-model="filterWO" placeholder="Work Order" select-on-click></input>
+        <div class='no-print' ng-if="!HTdata.length && !certdata.length" style="color:black; size 14px">Data Loading. Please wait. </div>
+        <div class='no-print' ng-if="HTdata.length && certdata.length" style="color:black; size:14px">Data Loaded. {{HTdata.length}} work orders scanned.</div> 
+        <div class='no-print' ng-if="!certdata.length" style="color:black; size:14px"> Searching through all certs now. </div>
+        <div class='no-print' ng-if="scoobydoo.length" style="color:black; size:14px"> {{scoobydoo.length}} Certificate(s) found. </div>
+        <div class='no-print' ng-if="!scoobydoo.length && certdata.length" style="color:black; size:14px"> No Certificate(s) found. </div>
+        <div class='no-print' ng-if="!scoobydoo.length && certdata.length" ng-repeat="data in HTdata | filter:{workOrder: filterWO} : true " >
+            {{data.workOrder}} LOAD# {{data.loadNumber}} TOTAL LOAD#  {{data.numLoads}} {{data.id}} <button ng-click="createCert(data)">Create Certificate For All Loads </button>
+        </div>
+        
+        <div ng-repeat="data in certdata | filter:{workOrder:filterWO }  :true |limitTo : 1 as scoobydoo">
+            <page size="A4" layout="portrait">
+                <table class="GeneratedTable" style="font-weight:bold" >
+                    <tr >
+                        <td rowspan= "2" style="width:20%">       
+                            {%endverbatim%}
+                                <img src="{%static 'images/MSAlogo.jpg' %}" style="width:180px;height:40px"></img>
+                            {%verbatim%}  
+                        </td>
+                        <td colspan= "3" style="width:48%; text-align:center"> <b>THERMAL TREATMENT PROCESS CERTIFICATION </b></td>
+                        <td colspan= "1" style="width:16%"> FRM - 742 </td>
+                        <td colspan= "1" style="width:16%"> REV : C </td>
+                    </tr>
+                    
+                    <tr>
+                        <td style="width:16%"> Reviewed By:</td>
+                        <td style="width:16%"> V.Ganzha</td>
+                        <td style="width:16%"> Approved By: </td>
+                        <td style="width:16%"> A.Rodriguez</td>
+                        <td style="width:16%"> 05/06/15</td>
+                     </tr>
+                </table>
+                
+                <table class="GeneratedTable" style="margin-top:10px" >
+                     <tr>
+                         <td style="width:17%;font-weight:bold" > Part Number:</td>
+                         <td style="width:40%"> {{data.partNumber}} </td>
+                         <td style="width:8%"> <b>Rev:</b> {{data.partRev}} </td>
+                         <td style="width:17%;font-weight:bold"> Work Order Number: </td>
+                         <td style="width:18%"> 
+                             <div  >{{data.workOrder}}</div>
+                         </td>
+                    </tr>
+                     <tr>
+                         <td style="width:17%;font-weight:bold"> Customer:</td>
+                         <td style="width:57%" colspan="2"> {{data.customer}} </td>
+                         <td style="width:17%;font-weight:bold"> Customer PO# </td>
+                         <td style="width:18%"> {{data.PO}} </td>
+                    </tr>
+                     <tr>
+                         <td style="width:17%;font-weight:bold"> Material:</td>
+                         <td style="width:57%" colspan="2"> {{data.specMaterial}} I.A.W. {{data.specMaterialSpec}} Rev {{data.specMaterialSpecRevision}}</td>
+                         <td style="width:17%;font-weight:bold"> Heat Number: </td>
+                         <td style="width:18%"> {{data.heatNumber}} </td>
+                    </tr>                
+                     <tr>
+                         <td style="width:17%;font-weight:bold"> Quantity(pcs):</td>
+                         <td style="width:57%" colspan="2"> {{data.quantityTotal}} <div style="display:inline" ng-if="data.coupons">(including coupons)</td>
+                         <td style="width:17%;font-weight:bold"> Weight(lbs): </td>
+                         <td style="width:18%"> {{data.weightTotal}}</td>
+                    </tr> 
+                     <tr>
+                         <td style="width:17%;font-weight:bold"> Process Specification(s):</td>
+                         <!--<td style="width:57%" colspan="2"> {{data.specMaterialSpec}} Rev {{data.specMaterialSpecRevision}}</td>-->
+                         <td style="width:57%" colspan="2"> {{data.specNumber}} Rev {{data.specRevision}}</td>
+                         <td style="width:35%" colspan="2"></td>
+                  
+                    </tr>                             
+                </table>
+                
+                <div style="color:black;border-radius:0" >
+                    <input type="checkbox" ng-model="data.PWAMCL"> PWA MCL Manual Section F-22 & F-40 </input>
+                    <br ng-if="data.loadsTotal <10">
+                    <input type="checkbox" ng-model="data.PWABatchControl"> Batch Control PWA-ASQR-20.1 </input>
+                </div>
+                
+                <table class="GeneratedTable" style="text-align:center" >
+                    <tr>
+                        <td colspan="11" align="center"> <strong> Process Parameters </strong> </td>
+                    </tr>
+                    <tr style="font-weight:bold">
+                        <td style="width:25%" colspan="2">Process</td>            
+                        <td>Spec Temp(°F)</td>
+                        <td>Spec Time</td>
+                        <td>Furnace <br>No.</td>
+                        <td>Control<br>Temp</td>
+                        <td>Soak Start<br> @ Temp</td>
+                        <td>Soak <br> End</td>
+                        <td>Actual Soak<br> Time</td>
+                        <td>Atmosphere</td>
+                        <td>Quench / Cooling</td>
+                    </tr>
+                    <tr >
+                        <td >Solution Treat </td>
+                        <td><div ng-if="data.numLoads != 1">1 of {{data.loadsTotal}}</td>  
+                        <td ng-if="data.specTempLow ==data.specTempHigh" >{{data.specTempHigh}}° F</td>
+                        <td ng-if="data.specTempLow !=data.specTempHigh" >{{data.specTempLow}} - {{data.specTempHigh}}° F</td>
+                        <!--<td>{{data.specSoakTime}} Minutes</td>-->
+                        <td>{{data.specSoakTime}} Minutes</td>
+                        <td> {{data.furnaceNoLoad1}}</td>
+                        <td>{{data.soakTempLoad1}}° F</td>
+                        <td>{{data.soakTimeStartLoad1| date: 'hh:mm'}}</td>
+                        <td>{{data.soakTimeEndLoad1}}</td>
+                        <td>{{data.SoakTimeLoad1}} Minutes</td>
+                        <td ng-if="data.furnaceNoLoad1 == 'VF1' || data.furnaceNoLoad1 == 'VF2'">Vacuum</td>
+                        <td ng-if="data.furnaceNoLoad1 != 'VF1' && data.furnaceNoLoad1 != 'VF2' "> Argon </td>
+                        <td ng-if="data.quenchMethodLoad1 == 'GFC'">GFC - Argon</td>
+                        <td ng-if="data.quenchMethodLoad1 != 'GFC'">{{data.quenchMethodLoad1}}</td>
+                    </tr>
+                    <tr ng-if="data.loadsTotal >= 2">
+                        <td >Solution Treat </td>
+                        <td><div ng-if="data.numLoads != 1">2 of {{data.loadsTotal}}</td>  
+                        <td ng-if="data.specTempLow ==data.specTempHigh" >{{data.specTempHigh}}° F</td>
+                        <td ng-if="data.specTempLow !=data.specTempHigh" >{{data.specTempLow}} - {{data.specTempHigh}}° F</td>
+                        <td>{{data.specSoakTime}} Minutes</td>
+                        <td> {{data.furnaceNoLoad1}}</td>
+                        <td>{{data.soakTempLoad2}}° F</td>
+                        <td>{{data.soakTimeStartLoad2| date: 'hh:mm'}}</td>
+                        <td>{{data.soakTimeEndLoad2}}</td>
+                        <td>{{data.SoakTimeLoad2}} Minutes</td>
+                        <td ng-if="data.furnaceNoLoad1 == 'VF1' || data.furnaceNoLoad1 == 'VF2'">Vacuum</td>
+                        <td ng-if="data.furnaceNoLoad1 != 'VF1' && data.furnaceNoLoad1 != 'VF2' "> Argon </td>
+                        <td ng-if="data.quenchMethodLoad1 == 'GFC'">GFC - Argon</td>
+                        <td ng-if="data.quenchMethodLoad1 != 'GFC'">{{data.quenchMethodLoad1}}</td>
+                    </tr>
+                    <tr ng-if="data.loadsTotal >= 3">
+                        <td >Solution Treat </td>
+                        <td><div ng-if="data.numLoads != 1">3 of {{data.loadsTotal}}</td>  
+                        <td ng-if="data.specTempLow ==data.specTempHigh" >{{data.specTempHigh}}° F</td>
+                        <td ng-if="data.specTempLow !=data.specTempHigh" >{{data.specTempLow}} - {{data.specTempHigh}}° F</td>
+                        <td>{{data.specSoakTime}} Minutes</td>
+                        <td> {{data.furnaceNoLoad1}}</td>
+                        <td>{{data.soakTempLoad3}}° F</td>
+                        <td>{{data.soakTimeStartLoad3| date: 'hh:mm'}}</td>
+                        <td>{{data.soakTimeEndLoad3}}</td>
+                        <td>{{data.SoakTimeLoad3}} Minutes</td>
+                        <td ng-if="data.furnaceNoLoad1 == 'VF1' || data.furnaceNoLoad1 == 'VF2'">Vacuum</td>
+                        <td ng-if="data.furnaceNoLoad1 != 'VF1' && data.furnaceNoLoad1 != 'VF2' "> Argon </td>
+                        <td ng-if="data.quenchMethodLoad1 == 'GFC'">GFC - Argon</td>
+                        <td ng-if="data.quenchMethodLoad1 != 'GFC'">{{data.quenchMethodLoad1}}</td>
+                    </tr>
+                    <tr ng-if="data.loadsTotal >= 4">
+                        <td >Solution Treat </td>
+                        <td><div ng-if="data.numLoads != 1">4 of {{data.loadsTotal}}</td>  
+                        <td ng-if="data.specTempLow ==data.specTempHigh" >{{data.specTempHigh}}° F</td>
+                        <td ng-if="data.specTempLow !=data.specTempHigh" >{{data.specTempLow}} - {{data.specTempHigh}}° F</td>
+                        <td>{{data.specSoakTime}} Minutes</td>
+                        <td> {{data.furnaceNoLoad1}}</td>
+                        <td>{{data.soakTempLoad4}}° F</td>
+                        <td>{{data.soakTimeStartLoad4| date: 'hh:mm'}}</td>
+                        <td>{{data.soakTimeEndLoad4}}</td>
+                        <td>{{data.SoakTimeLoad4}} Minutes</td>
+                        <td ng-if="data.furnaceNoLoad1 == 'VF1' || data.furnaceNoLoad1 == 'VF2'">Vacuum</td>
+                        <td ng-if="data.furnaceNoLoad1 != 'VF1' && data.furnaceNoLoad1 != 'VF2' "> Argon </td>
+                        <td ng-if="data.quenchMethodLoad1 == 'GFC'">GFC - Argon</td>
+                        <td ng-if="data.quenchMethodLoad1 != 'GFC'">{{data.quenchMethodLoad1}}</td>
+                    </tr> 
+                    <tr ng-if="data.loadsTotal >= 5">
+                        <td >Solution Treat </td>
+                        <td><div ng-if="data.numLoads != 1">5 of {{data.loadsTotal}}</td>  
+                        <td ng-if="data.specTempLow ==data.specTempHigh" >{{data.specTempHigh}}° F</td>
+                        <td ng-if="data.specTempLow !=data.specTempHigh" >{{data.specTempLow}} - {{data.specTempHigh}}° F</td>
+                        <td>{{data.specSoakTime}} Minutes</td>
+                        <td> {{data.furnaceNoLoad1}}</td>
+                        <td>{{data.soakTempLoad5}}° F</td>
+                        <td>{{data.soakTimeStartLoad5| date: 'hh:mm'}}</td>
+                        <td>{{data.soakTimeEndLoad5}}</td>
+                        <td>{{data.SoakTimeLoad5}} Minutes</td>
+                        <td ng-if="data.furnaceNoLoad1 == 'VF1' || data.furnaceNoLoad1 == 'VF2'">Vacuum</td>
+                        <td ng-if="data.furnaceNoLoad1 != 'VF1' && data.furnaceNoLoad1 != 'VF2' "> Argon </td>
+                        <td ng-if="data.quenchMethodLoad1 == 'GFC'">GFC - Argon</td>
+                        <td ng-if="data.quenchMethodLoad1 != 'GFC'">{{data.quenchMethodLoad1}}</td>
+                    </tr>  
+                    <tr ng-if="data.loadsTotal >= 6">
+                        <td >Solution Treat </td>
+                        <td><div ng-if="data.numLoads != 1">6 of {{data.loadsTotal}}</td>  
+                        <td ng-if="data.specTempLow ==data.specTempHigh" >{{data.specTempHigh}}° F</td>
+                        <td ng-if="data.specTempLow !=data.specTempHigh" >{{data.specTempLow}} - {{data.specTempHigh}}° F</td>
+                        <td>{{data.specSoakTime}} Minutes</td>
+                        <td> {{data.furnaceNoLoad1}}</td>
+                        <td>{{data.soakTempLoad6}}° F</td>
+                        <td>{{data.soakTimeStartLoad6| date: 'hh:mm'}}</td>
+                        <td>{{data.soakTimeEndLoad6}}</td>
+                        <td>{{data.SoakTimeLoad6}} Minutes</td>
+                        <td ng-if="data.furnaceNoLoad1 == 'VF1' || data.furnaceNoLoad1 == 'VF2'">Vacuum</td>
+                        <td ng-if="data.furnaceNoLoad1 != 'VF1' && data.furnaceNoLoad1 != 'VF2' "> Argon </td>
+                        <td ng-if="data.quenchMethodLoad1 == 'GFC'">GFC - Argon</td>
+                        <td ng-if="data.quenchMethodLoad1 != 'GFC'">{{data.quenchMethodLoad1}}</td>
+                    </tr>                        
+                    <tr ng-if="data.loadsTotal >= 7">
+                        <td >Solution Treat </td>
+                        <td><div ng-if="data.numLoads != 1">7 of {{data.loadsTotal}}</td>  
+                        <td ng-if="data.specTempLow ==data.specTempHigh" >{{data.specTempHigh}}° F</td>
+                        <td ng-if="data.specTempLow !=data.specTempHigh" >{{data.specTempLow}} - {{data.specTempHigh}}° F</td>
+                        <td>{{data.specSoakTime}} Minutes</td>
+                        <td> {{data.furnaceNoLoad1}}</td>
+                        <td>{{data.soakTempLoad7}}° F</td>
+                        <td>{{data.soakTimeStartLoad7| date: 'hh:mm'}}</td>
+                        <td>{{data.soakTimeEndLoad7}}</td>
+                        <td>{{data.SoakTimeLoad7}} Minutes</td>
+                        <td ng-if="data.furnaceNoLoad1 == 'VF1' || data.furnaceNoLoad1 == 'VF2'">Vacuum</td>
+                        <td ng-if="data.furnaceNoLoad1 != 'VF1' && data.furnaceNoLoad1 != 'VF2' "> Argon </td>
+                        <td ng-if="data.quenchMethodLoad1 == 'GFC'">GFC - Argon</td>
+                        <td ng-if="data.quenchMethodLoad1 != 'GFC'">{{data.quenchMethodLoad1}}</td>
+                    </tr>   
+                    
+
+                    <tr ng-if="data.loadsTotal >= 8">
+                        <td >Solution Treat </td>
+                        <td><div ng-if="data.numLoads != 1">8 of {{data.loadsTotal}}</td>  
+                        <td ng-if="data.specTempLow ==data.specTempHigh" >{{data.specTempHigh}}° F</td>
+                        <td ng-if="data.specTempLow !=data.specTempHigh" >{{data.specTempLow}} - {{data.specTempHigh}}° F</td>
+                        <td>{{data.specSoakTime}} Minutes</td>
+                        <td> {{data.furnaceNoLoad1}}</td>
+                        <td>{{data.soakTempLoad8}}° F</td>
+                        <td>{{data.soakTimeStartLoad8| date: 'hh:mm'}}</td>
+                        <td>{{data.soakTimeEndLoad8}}</td>
+                        <td>{{data.SoakTimeLoad8}} Minutes</td>
+                        <td ng-if="data.furnaceNoLoad1 == 'VF1' || data.furnaceNoLoad1 == 'VF2'">Vacuum</td>
+                        <td ng-if="data.furnaceNoLoad1 != 'VF1' && data.furnaceNoLoad1 != 'VF2' "> Argon </td>
+                        <td ng-if="data.quenchMethodLoad1 == 'GFC'">GFC - Argon</td>
+                        <td ng-if="data.quenchMethodLoad1 != 'GFC'">{{data.quenchMethodLoad1}}</td>
+                    </tr>   
+                    <tr ng-if="data.loadsTotal >= 9">
+                        <td >Solution Treat </td>
+                        <td><div ng-if="data.numLoads != 1">9 of {{data.loadsTotal}}</td>  
+                        <td ng-if="data.specTempLow ==data.specTempHigh" >{{data.specTempHigh}}° F</td>
+                        <td ng-if="data.specTempLow !=data.specTempHigh" >{{data.specTempLow}} - {{data.specTempHigh}}° F</td>
+                        <td>{{data.specSoakTime}} Minutes</td>
+                        <td> {{data.furnaceNoLoad1}}</td>
+                        <td>{{data.soakTempLoad9}}° F</td>
+                        <td>{{data.soakTimeStartLoad9| date: 'hh:mm'}}</td>
+                        <td>{{data.soakTimeEndLoad9}}</td>
+                        <td>{{data.SoakTimeLoad9}} Minutes</td>
+                        <td ng-if="data.furnaceNoLoad1 == 'VF1' || data.furnaceNoLoad1 == 'VF2'">Vacuum</td>
+                        <td ng-if="data.furnaceNoLoad1 != 'VF1' && data.furnaceNoLoad1 != 'VF2' "> Argon </td>
+                        <td ng-if="data.quenchMethodLoad1 == 'GFC'">GFC - Argon</td>
+                        <td ng-if="data.quenchMethodLoad1 != 'GFC'">{{data.quenchMethodLoad1}}</td>
+                    </tr>   
+                    <tr ng-if="data.loadsTotal >= 10">
+                        <td >Solution Treat </td>
+                        <td><div ng-if="data.numLoads != 1">10 of {{data.loadsTotal}}</td>  
+                        <td ng-if="data.specTempLow ==data.specTempHigh" >{{data.specTempHigh}}° F</td>
+                        <td ng-if="data.specTempLow !=data.specTempHigh" >{{data.specTempLow}} - {{data.specTempHigh}}° F</td>
+                        <td>{{data.specSoakTime}} Minutes</td>
+                        <td> {{data.furnaceNoLoad1}}</td>
+                        <td>{{data.soakTempLoad10}}° F</td>
+                        <td>{{data.soakTimeStartLoad10}}</td>
+                        <td>{{data.soakTimeEndLoad10}}</td>
+                        <td>{{data.SoakTimeLoad10}} Minutes</td>
+                        <td ng-if="data.furnaceNoLoad1 == 'VF1' || data.furnaceNoLoad1 == 'VF2'">Vacuum</td>
+                        <td ng-if="data.furnaceNoLoad1 != 'VF1' && data.furnaceNoLoad1 != 'VF2' "> Argon </td>
+                        <td ng-if="data.quenchMethodLoad1 == 'GFC'">GFC - Argon</td>
+                        <td ng-if="data.quenchMethodLoad1 != 'GFC'">{{data.quenchMethodLoad1}}</td>
+                    </tr>   
+        
+                    <tr ng-if="data.loadsTotal >= 11">
+                        <td >Solution Treat </td>
+                        <td><div ng-if="data.numLoads != 1">11 of {{data.loadsTotal}}</td>  
+                        <td ng-if="data.specTempLow ==data.specTempHigh" >{{data.specTempHigh}}° F</td>
+                        <td ng-if="data.specTempLow !=data.specTempHigh" >{{data.specTempLow}} - {{data.specTempHigh}}° F</td>
+                        <td>{{data.specSoakTime}} Minutes</td>
+                        <td> {{data.furnaceNoLoad1}}</td>
+                        <td>{{data.soakTempLoad11}}° F</td>
+                        <td>{{data.soakTimeStartLoad11| date: 'hh:mm'}}</td>
+                        <td>{{data.soakTimeEndLoad11}}</td>
+                        <td>{{data.SoakTimeLoad11}} Minutes</td>
+                        <td ng-if="data.furnaceNoLoad1 == 'VF1' || data.furnaceNoLoad1 == 'VF2'">Vacuum</td>
+                        <td ng-if="data.furnaceNoLoad1 != 'VF1' && data.furnaceNoLoad1 != 'VF2' "> Argon </td>
+                        <td ng-if="data.quenchMethodLoad1 == 'GFC'">GFC - Argon</td>
+                        <td ng-if="data.quenchMethodLoad1 != 'GFC'">{{data.quenchMethodLoad1}}</td>
+                    </tr>   
+                    <tr ng-if="data.loadsTotal >= 12">
+                        <td >Solution Treat </td>
+                        <td><div ng-if="data.numLoads != 1">12 of {{data.loadsTotal}}</td>  
+                        <td ng-if="data.specTempLow ==data.specTempHigh" >{{data.specTempHigh}}° F</td>
+                        <td ng-if="data.specTempLow !=data.specTempHigh" >{{data.specTempLow}} - {{data.specTempHigh}}° F</td>
+                        <td>{{data.specSoakTime}} Minutes</td>
+                        <td> {{data.furnaceNoLoad1}}</td>
+                        <td>{{data.soakTempLoad12}}° F</td>
+                        <td>{{data.soakTimeStartLoad12| date: 'hh:mm'}}</td>
+                        <td>{{data.soakTimeEndLoad12}}</td>
+                        <td>{{data.SoakTimeLoad12}} Minutes</td>
+                        <td ng-if="data.furnaceNoLoad1 == 'VF1' || data.furnaceNoLoad1 == 'VF2'">Vacuum</td>
+                        <td ng-if="data.furnaceNoLoad1 != 'VF1' && data.furnaceNoLoad1 != 'VF2' "> Argon </td>
+                        <td ng-if="data.quenchMethodLoad1 == 'GFC'">GFC - Argon</td>
+                        <td ng-if="data.quenchMethodLoad1 != 'GFC'">{{data.quenchMethodLoad1}}</td>
+                    </tr>   
+                    <tr ng-if="data.loadsTotal >= 13">
+                        <td >Solution Treat </td>
+                        <td><div ng-if="data.numLoads != 1">13 of {{data.loadsTotal}}</td>  
+                        <td ng-if="data.specTempLow ==data.specTempHigh" >{{data.specTempHigh}}° F</td>
+                        <td ng-if="data.specTempLow !=data.specTempHigh" >{{data.specTempLow}} - {{data.specTempHigh}}° F</td>
+                        <td>{{data.specSoakTime}} Minutes</td>
+                        <td> {{data.furnaceNoLoad1}}</td>
+                        <td>{{data.soakTempLoad13}}° F</td>
+                        <td>{{data.soakTimeStartLoad13| date: 'hh:mm'}}</td>
+                        <td>{{data.soakTimeEndLoad13}}</td>
+                        <td>{{data.SoakTimeLoad13}} Minutes</td>
+                        <td ng-if="data.furnaceNoLoad1 == 'VF1' || data.furnaceNoLoad1 == 'VF2'">Vacuum</td>
+                        <td ng-if="data.furnaceNoLoad1 != 'VF1' && data.furnaceNoLoad1 != 'VF2' "> Argon </td>
+                        <td ng-if="data.quenchMethodLoad1 == 'GFC'">GFC - Argon</td>
+                        <td ng-if="data.quenchMethodLoad1 != 'GFC'">{{data.quenchMethodLoad1}}</td>
+                    </tr>   
+                    <tr ng-if="data.loadsTotal >= 14">
+                        <td >Solution Treat </td>
+                        <td><div ng-if="data.numLoads != 1">14 of {{data.loadsTotal}}</td>  
+                        <td ng-if="data.specTempLow ==data.specTempHigh" >{{data.specTempHigh}}° F</td>
+                        <td ng-if="data.specTempLow !=data.specTempHigh" >{{data.specTempLow}} - {{data.specTempHigh}}° F</td>
+                        <td>{{data.specSoakTime}} Minutes</td>
+                        <td> {{data.furnaceNoLoad1}}</td>
+                        <td>{{data.soakTempLoad14}}° F</td>
+                        <td>{{data.soakTimeStartLoad14| date: 'hh:mm'}}</td>
+                        <td>{{data.soakTimeEndLoad14}}</td>
+                        <td>{{data.SoakTimeLoad14}} Minutes</td>
+                        <td ng-if="data.furnaceNoLoad1 == 'VF1' || data.furnaceNoLoad1 == 'VF2'">Vacuum</td>
+                        <td ng-if="data.furnaceNoLoad1 != 'VF1' && data.furnaceNoLoad1 != 'VF2' "> Argon </td>
+                        <td ng-if="data.quenchMethodLoad1 == 'GFC'">GFC - Argon</td>
+                        <td ng-if="data.quenchMethodLoad1 != 'GFC'">{{data.quenchMethodLoad1}}</td>
+                    </tr>   
+                    <tr ng-if="data.loadsTotal >= 15">
+                        <td >Solution Treat </td>
+                        <td><div ng-if="data.numLoads != 1">15 of {{data.loadsTotal}}</td>  
+                        <td ng-if="data.specTempLow ==data.specTempHigh" >{{data.specTempHigh}}° F</td>
+                        <td ng-if="data.specTempLow !=data.specTempHigh" >{{data.specTempLow}} - {{data.specTempHigh}}° F</td>
+                        <td>{{data.specSoakTime}} Minutes</td>
+                        <td> {{data.furnaceNoLoad1}}</td>
+                        <td>{{data.soakTempLoad15}}° F</td>
+                        <td>{{data.soakTimeStartLoad15| date: 'hh:mm'}}</td>
+                        <td>{{data.soakTimeEndLoad15}}</td>
+                        <td>{{data.SoakTimeLoad15}} Minutes</td>
+                        <td ng-if="data.furnaceNoLoad1 == 'VF1' || data.furnaceNoLoad1 == 'VF2'">Vacuum</td>
+                        <td ng-if="data.furnaceNoLoad1 != 'VF1' && data.furnaceNoLoad1 != 'VF2' "> Argon </td>
+                        <td ng-if="data.quenchMethodLoad1 == 'GFC'">GFC - Argon</td>
+                        <td ng-if="data.quenchMethodLoad1 != 'GFC'">{{data.quenchMethodLoad1}}</td>
+                    </tr>   
+                    <tr ng-if="data.loadsTotal >= 16">
+                        <td >Solution Treat </td>
+                        <td><div ng-if="data.numLoads != 1">16 of {{data.loadsTotal}}</td>  
+                        <td ng-if="data.specTempLow ==data.specTempHigh" >{{data.specTempHigh}}° F</td>
+                        <td ng-if="data.specTempLow !=data.specTempHigh" >{{data.specTempLow}} - {{data.specTempHigh}}° F</td>
+                        <td>{{data.specSoakTime}} Minutes</td>
+                        <td> {{data.furnaceNoLoad1}}</td>
+                        <td>{{data.soakTempLoad16}}° F</td>
+                        <td>{{data.soakTimeStartLoad16| date: 'hh:mm'}}</td>
+                        <td>{{data.soakTimeEndLoad16}}</td>
+                        <td>{{data.SoakTimeLoad16}} Minutes</td>
+                        <td ng-if="data.furnaceNoLoad1 == 'VF1' || data.furnaceNoLoad1 == 'VF2'">Vacuum</td>
+                        <td ng-if="data.furnaceNoLoad1 != 'VF1' && data.furnaceNoLoad1 != 'VF2' "> Argon </td>
+                        <td ng-if="data.quenchMethodLoad1 == 'GFC'">GFC - Argon</td>
+                        <td ng-if="data.quenchMethodLoad1 != 'GFC'">{{data.quenchMethodLoad1}}</td>
+                    </tr>               
+                </table>
+                <table class="GeneratedTable" style="margin-top:10px" >
+                    <tr>
+                        <td colspan="6" align="center"><strong>Test Results</strong></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"><b>Hardness Requirement:</b></td>
+                        <td>Process Only</td>
+                        <td colspan="2"><b>Actual Hardness:</b></td>
+                        <td>N/A</td>
+                    </tr>            
+                    
+                    <tr>
+                        <td><b>Quantity Tested: </b></td>
+                        <td>0</td>
+                        <td><b>Quantity Accepted: </b></td>
+                        <td>{{data.quantityTotal}}</td>
+                        <td><b>Quantity Rejected: </b></td>
+                        <td>0</td>
+                    </tr>
+                </table>
+
+                
+
+                <div style="color:black" >
+                    M.S Aerospace, Inc. hereby certifies that the parts listed above have been processed in accordance
+                    with the listed specifications. Test results were obtained through
+                    standard approved test methods and the hardness is certified for the parts in their present state of completion.
+                    <p>
+                </div>
+                    <span style="color:black">Comments: <br>
+                    <textarea ng-model="data.certSavedNotes" ng-change="updateCert(data)" rows="4" cols="50" style="border:none;resize:none"></textarea>
+                    </span>
+
+                <table class="SignatureTable" align="right"   >
+                    <tr style="border-bottom:solid 1px" >
+                        <td style="font-family:'Brush Script Mt'; font-size:24px ">D. Moreno</td>
+                        <td >{{data.dateOut}}</td>
+                    </tr>
+                    <tr>
+                        <td >Authorized Signature</td>
+                        <td >Date</td>
+                    </tr>        
+                </table>
+            </page>
+        </div>
+    </div>
+</body>
+{%endverbatim%}
+</html>
+{% endblock %}

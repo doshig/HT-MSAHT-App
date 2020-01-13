@@ -1,0 +1,155 @@
+{% extends "Homepage/header.html" %}
+
+
+{% block content %}
+{%load staticfiles%}
+
+<!DOCTYPE html>
+
+<!-- updated 3/22/19 to fix allfiltereddata in wrong place (after track by...) -->
+
+<style>
+form {
+	padding-top: 20px;
+	padding-left: 14px;
+	width : 100%;
+	color: black;
+	font-weight:bold;
+}
+
+.btnokcount{
+	font-weight:bold;
+}
+
+.okdep {
+	color:green;
+}
+
+.nookdep {
+	color:red;
+}
+
+div.container1 {
+  font-weight: bold;
+  background-color: white ;
+  width: 100%;
+  overflow: scroll;
+  padding : 10px;
+}
+
+.table {
+	font-size: 14px;
+	color:black;
+}
+
+thead, tbody {
+	padding : 2px;
+}
+
+tr.listtoschedule:hover {
+
+	background-color: #CACFD2 ;
+	
+}
+
+td.tdschedulelist {
+	
+	padding-top:1px;
+	padding-bottom:1px;
+	overflow:hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+
+}
+
+td.tdright {
+	
+	padding-top:1px;
+	padding-bottom:1px;
+	overflow:hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	color: green;
+
+}
+td.tdwrong {
+	
+	padding-top:2px;
+	padding-bottom:2px;
+	overflow:hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	color: red;
+
+}
+
+table{
+border: 1px solid black;
+    font-color:black
+
+}
+
+</style>
+<head>
+    <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.7/angular.min.js"></script>
+    <!-- 04/03/19 - Update the .JS so it always downloads a new one. This is done by appending random number to the end which tricks browser to get a new copy -->
+    <script>document.write('<script src="{% static 'HeatTreat/HeatTreat.js' %}?ver=' + Math.floor(Math.random() * 100) + '"\><\/script>');</script>
+    
+</head>
+
+
+    <body ng-app="HT.HeatTreat" >
+
+        {% verbatim%}
+        <div ng-controller="HeatTreatController">
+         <p><p>
+
+        <table class="table">
+            <thead>
+                <tr class="table-dark">
+                    <th scope="col" style="padding-top:1px;padding-bottom:1px;">Work Order</th>
+                    <th scope="col" style="padding-top:1px;padding-bottom:1px;">Generated Date</th>
+        				  <th scope="col" style="padding-top:1px;padding-bottom:1px;">Date Out </th>
+        				  <th scope="col" style="padding-top:1px;padding-bottom:1px;">Part Number</th>
+        				  <th scope="col" style="padding-top:1px;padding-bottom:1px;">Load Number</th>        
+        				  <th scope="col" style="padding-top:1px;padding-bottom:1px;">Total # Loads </th>
+        				  <th scope="col" style="padding-top:1px;padding-bottom:1px;">Pieces </th>
+        				  <th scope="col" style="padding-top:1px;padding-bottom:1px;">Operator TTPI </th>
+    				 </tr>
+    				<tr>
+        				<td><input type="text" ng-model="filterWO" style="width:100px"/></td>
+        				<td><input type="text" ng-model="filterGenDate" style="width:100px"/></td>
+        				<td></td>
+        				<td><input type="text" ng-model="filterPN" style="width:100px"/></td>
+        				<td><input type="text" ng-model="filterLoad" style="width:60px"/></td>
+        				<td><input type="text" ng-model="filterTotalLoads" style="width:60px"/></td>
+        				<td><input type="text" ng-model="filterPieces" style="width:60px"/></td>
+        				<td></td>
+        			</tr>
+        		</thead>
+        		<tbody>
+        		<tr ng-repeat="data in pendingjobdata| filter:{workOrder:filterWO,genDate:filterGenDate, partNumber:filterPN, loadNumber:filterLoad, numLoads:filterTotalLoads,quantityLot:filterPieces}|orderBy:'genDate' as allfiltereddata  " >
+        		<!--<tr ng-repeat="data in HTdata" ng-show="data | filter:{workOrder:filterWO,genDate:filterGenDate, partNumber:filterPN, loadNumber:filterLoad, numLoads:filterTotalLoads,quantityLot:filterPieces}|orderBy:'genDate' track by data.id " ng-if="!data.dateOut">-->
+                <div ng-if="!pendingjobdata.length" style="color:black; size 14px">Data Loading. Please wait. </div>
+                <div ng-if="pendingjobdata.length" style="color:black; size:14px">Data Loaded. {{pendingjobdata.length}} matches.</div>
+                
+                <td>{{data.workOrder}}</td>
+                <td>{{data.genDate}}</td>
+                <td>{{data.dateOut}}</td>
+                <td>{{data.partNumber}}</td>
+                <td>{{data.loadNumber}}</td>
+                <td>{{data.numLoads}}</td>
+                <td>{{data.quantityLot}} </td>
+                <td><button id="loadOperatorTTPIButton" ng-click="openOperatorTTPIThenEdit(data.workOrder,data.loadNumber )"> Open </button></td>
+        
+        </tr>
+
+        {%endverbatim%}
+
+
+    </body>
+
+
+
+{% endblock %}
