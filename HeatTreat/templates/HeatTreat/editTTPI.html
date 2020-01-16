@@ -587,7 +587,7 @@ form{
                                     <!--<input type="text" ng-model="data.reviewBy" style="width:33%"/>-->
                                     <select ng-model="data.reviewBy" ng-options="fred.operatorName as fred.operatorName for fred in Operatordata| filter:{canReviewTTPI : true}" ">        
                                                                 &nbsp;&nbsp;&nbsp;&nbsp;
-                                    <input type="text" id="reviewDateInputBox{{data.id}}" ng-model="data.reviewDate" ng-change="updateReview(data)"  style="width:33%"/>
+                                    <input type="text" id="reviewDateInputBox{{data.id}}" ng-model="data.reviewDate" ng-change="updateReview(data,spec)"  style="width:33%"/>
                                     <label for="lockedCheckbox">LOCKED:</label>
                                     <input id="lockedCheckbox" type="checkbox" ng-model="data.locked" disabled style="zoom:2"/>
                                 </div>

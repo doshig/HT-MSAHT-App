@@ -44,6 +44,11 @@
 //11/18/19 - on addSoakDur - add logic to check soakTimePref variable. This is preferred time set by management.
 // If it is present, use preferred time to calculate soak end time rather than the soaktime from the spec.
 
+
+//1/16/2020 - update updateReview to also pass spec arg so spec master reviewed and spec
+/// spec masterapproved can be verified as complete
+/// also update approved user list for updateReview to include full string names
+
  $(document).ready(function(){
  
 
@@ -1916,7 +1921,7 @@ return todayDate;
         location.reload();   	
     };
     	
-	$scope.updateReview = function(data){
+	$scope.updateReview = function(data,spec){
         console.log(data.workOrder, data.loadNumber, data.locked, data.reviewBy);
         console.log(data.reviewDate);
         var today = getTodayDate();
@@ -1927,7 +1932,9 @@ return todayDate;
             alert("Please enter date in format: YYYY-MM-DD, E.G.: 2019-10-03.");
         }
         else{
-            var approvedUsers = ['morenod','ganzhav','rodrigueza']
+            var approvedUsers = ['morenod','ganzhav','rodrigueza','V.Ganzha','D.Moreno','A.Rodriguez']
+            console.log("spec: ", spec.specMasterApproved);
+            console.log("spec:",spec.specMasterReviewed)
             if(approvedUsers.includes(spec.specMasterReviewed) && approvedUsers.includes(spec.specMasterApproved)){
                 if(!data.locked){
     
